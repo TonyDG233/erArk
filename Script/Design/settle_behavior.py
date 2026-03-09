@@ -367,7 +367,7 @@ def handle_settle_behavior(character_id: int, now_time: datetime.datetime, event
         
         # Web模式下捕获结算文本用于文本回溯
         if cache.web_mode and now_text.strip():
-            cache.web_settlement_texts.append(now_text)
+            cache.web_instruct_texts.append(now_text)
         
         return now_panel
 

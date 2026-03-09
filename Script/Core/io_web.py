@@ -127,17 +127,25 @@ def append_current_draw_element(element: Dict[str, Any], record_history: bool = 
 
     返回值类型：无
     功能描述：统一处理绘制元素的追加和历史维护
+    在行为循环期间，文本类元素会被记录到其他文本列表中，同时不再推送到前端显示
     """
     _ensure_current_draw_list()
+    # 如果文本为空，则直接返回
+    if isinstance(element, dict):
+        text_content = element.get("text", "")
+        if isinstance(text_content, str) and text_content == "":
+            return
     # 如果是文本类的元素
-    if isinstance(element, dict) and element.get("type") in {"text", "line", "title"}:
+    if isinstance(element, dict) and element.get("type") in {"text", "wait"}:
         string = element.get("text", "")
-        # 在行为循环期间记录文本到结算文本列表（用于文本回溯）
+        # 在行为循环期间记录文本到其他文本列表（用于其他文本回溯）
         if hasattr(cache, 'web_text_recording_flag') and cache.web_text_recording_flag:
             text_content = string.strip() if isinstance(string, str) else ""
             # 排除空白和纯换行符
             if text_content and text_content != "\n":
-                cache.web_settlement_texts.append(string)
+                cache.web_other_texts.append(string)
+            # 已记录的文本（包括空白和换行符）不再推送到前端显示
+            return
     cache.current_draw_elements.append(element)
     elem_type = element.get("type")
     if elem_type in {"line_wait", "wait"}:

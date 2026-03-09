@@ -2369,17 +2369,29 @@ def _emit_game_state_update():
     except Exception as e:
         logging.warning(f"获取对话框状态失败: {e}")
     
-    # 添加结算文本（用于文本回溯）
+    # 添加指令文本（用于指令文本回溯）
     try:
-        if hasattr(cache, 'web_settlement_texts') and cache.web_settlement_texts:
-            local_state["settlement_texts"] = cache.web_settlement_texts.copy()
-            # 清空已发送的结算文本
-            cache.web_settlement_texts.clear()
+        if hasattr(cache, 'web_instruct_texts') and cache.web_instruct_texts:
+            local_state["instruct_texts"] = cache.web_instruct_texts.copy()
+            # 清空已发送的指令文本
+            cache.web_instruct_texts.clear()
         else:
-            local_state["settlement_texts"] = []
+            local_state["instruct_texts"] = []
     except Exception as e:
-        logging.warning(f"获取结算文本失败: {e}")
-        local_state["settlement_texts"] = []
+        logging.warning(f"获取指令文本失败: {e}")
+        local_state["instruct_texts"] = []
+    
+    # 添加其他文本（用于其他文本回溯）
+    try:
+        if hasattr(cache, 'web_other_texts') and cache.web_other_texts:
+            local_state["other_texts"] = cache.web_other_texts.copy()
+            # 清空已发送的其他文本
+            cache.web_other_texts.clear()
+        else:
+            local_state["other_texts"] = []
+    except Exception as e:
+        logging.warning(f"获取其他文本失败: {e}")
+        local_state["other_texts"] = []
 
     
     try:

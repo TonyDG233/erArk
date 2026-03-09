@@ -118,11 +118,17 @@ function escapeHtml(text) {
  * 创建文本回溯面板
  * 显示历史文本缓存中的所有文本，保留原有格式和样式
  * 
+ * @param {string} type - 'instruct' 指令文本回溯 或 'other' 其他文本回溯
  * @returns {HTMLElement} 文本回溯面板元素
  */
-function createTextHistoryPanel() {
+function createTextHistoryPanel(type = 'instruct') {
     const panel = document.createElement('div');
     panel.className = 'text-history-panel';
+    
+    // 根据类型选择对应的缓存
+    const cache = type === 'other' ? otherTextHistoryCache : textHistoryCache;
+    const titleText = type === 'other' ? '其他文本回溯' : '指令文本回溯';
+    const exitFunc = type === 'other' ? exitOtherTextHistoryMode : exitTextHistoryMode;
     
     // ========== 头部区域 ==========
     const header = document.createElement('div');
@@ -130,13 +136,13 @@ function createTextHistoryPanel() {
     
     const title = document.createElement('h2');
     title.className = 'text-history-title';
-    title.textContent = '文本回溯';
+    title.textContent = titleText;
     header.appendChild(title);
     
     // 缓存条数信息
     const countInfo = document.createElement('span');
     countInfo.className = 'text-history-count';
-    countInfo.textContent = `共 ${textHistoryCache.length} 条记录`;
+    countInfo.textContent = `共 ${cache.length} 条记录`;
     header.appendChild(countInfo);
     
     // 关闭按钮
@@ -144,7 +150,7 @@ function createTextHistoryPanel() {
     closeBtn.className = 'text-history-close-btn';
     closeBtn.textContent = '✕';
     closeBtn.title = '关闭文本回溯';
-    closeBtn.onclick = () => exitTextHistoryMode();
+    closeBtn.onclick = () => exitFunc();
     header.appendChild(closeBtn);
     
     panel.appendChild(header);
@@ -153,7 +159,7 @@ function createTextHistoryPanel() {
     const content = document.createElement('div');
     content.className = 'text-history-content';
     
-    if (textHistoryCache.length === 0) {
+    if (cache.length === 0) {
         // 无历史记录时显示提示
         const emptyTip = document.createElement('div');
         emptyTip.className = 'text-history-empty';
@@ -165,7 +171,7 @@ function createTextHistoryPanel() {
         currentLine.className = 'text-history-line';
         content.appendChild(currentLine);
         
-        textHistoryCache.forEach((item, index) => {
+        cache.forEach((item, index) => {
             const element = createTextHistoryElement(item);
             if (element) {
                 // 如果是换行符类型，创建新行
@@ -326,6 +332,15 @@ function createTextHistoryElement(item) {
             // 使用富文本解析函数处理标签
             element.innerHTML = parseSettlementRichText(item.text || '');
             // 注意：由于使用innerHTML，不再应用applyFontStyle
+            break;
+            
+        case 'other':
+            // 其他文本，显示为带有特殊样式的块级元素（来自io_web.py的文本）
+            element = document.createElement('div');
+            element.className = 'text-history-item text-history-other';
+            element.style.whiteSpace = 'pre-wrap';
+            // 使用富文本解析函数处理可能存在的标签
+            element.innerHTML = parseSettlementRichText(item.text || '');
             break;
             
         default:

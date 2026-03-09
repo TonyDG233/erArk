@@ -1687,8 +1687,10 @@ class Cache:
         """ Web模式是否需要完整刷新（切换交互对象后设置为True） """
         self.web_value_changes: List[dict] = []
         """ Web模式数值变化列表，每个元素包含 character_id, field, value, timestamp """
-        self.web_settlement_texts: List[str] = []
-        """ Web模式结算文本列表（包括行为描述和数值变化），用于文本回溯显示 """
+        self.web_instruct_texts: List[str] = []
+        """ Web模式指令文本列表（包括指令行动描述和指令行动结算），用于指令文本回溯显示 """
+        self.web_other_texts: List[str] = []
+        """ Web模式其他文本列表（io_web.py中的其他文本），用于其他文本回溯显示 """
         self.web_text_recording_flag: bool = False
         """ Web模式文本记录标志，在角色行为循环期间为True，用于控制era_print的文本记录 """
         self.web_sub_panel_mode: bool = False

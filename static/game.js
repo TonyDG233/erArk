@@ -27,9 +27,12 @@ let sceneCharactersMinorDialogs = []; // 当前场景的小对话框数据
 
 // ========== 文本回溯缓存系统 ==========
 const TEXT_HISTORY_MAX_LENGTH = 200;  // 文本历史缓存最大长度
-let textHistoryCache = [];             // 文本历史缓存数组
-let textHistoryContentSet = new Set(); // 文本内容去重集合（用于防止同一文本在不同状态更新中被重复添加）
-let isTextHistoryMode = false;         // 是否处于文本回溯模式
+let textHistoryCache = [];             // 指令文本历史缓存数组（用于指令文本回溯）
+let textHistoryContentSet = new Set(); // 指令文本内容去重集合（用于防止同一文本在不同状态更新中被重复添加）
+let otherTextHistoryCache = [];        // 其他文本历史缓存数组（用于其他文本回溯）
+let otherTextHistoryContentSet = new Set(); // 其他文本内容去重集合
+let isTextHistoryMode = false;         // 是否处于指令文本回溯模式
+let isOtherTextHistoryMode = false;    // 是否处于其他文本回溯模式
 let savedGameContent = null;           // 保存的游戏内容DOM状态
 
 /**
@@ -111,25 +114,86 @@ function addValueChangesToTextHistory(valueChanges, source) {
 
 /**
  * 获取文本历史缓存
- * @returns {Array} 文本历史缓存数组
+ * @returns {Array} 指令文本历史缓存数组
  */
 function getTextHistory() {
     return textHistoryCache;
 }
 
 /**
- * 清空文本历史缓存
+ * 清空指令文本历史缓存
  */
 function clearTextHistory() {
     textHistoryCache = [];
+    textHistoryContentSet.clear();
 }
 
 /**
- * 进入文本回溯模式
- * 保存当前游戏内容，显示文本历史界面
+ * 添加其他文本元素到历史缓存（用于其他文本回溯）
+ * 缓存io_web.py发送的其他文本，超过上限时移除最旧的
+ * 
+ * @param {Object} item - 要缓存的文本元素
+ */
+function addToOtherTextHistory(item) {
+    // 支持的文本类型（不含按钮）
+    const textTypes = ['text', 'line_feed', 'title', 'center_text', 'right_text', 'line_wait', 'other'];
+    if (!textTypes.includes(item.type)) {
+        return;
+    }
+    
+    // 忽略空文本
+    if ((item.type === 'text' || item.type === 'other') && (!item.text || item.text.trim() === '')) {
+        return;
+    }
+    
+    // 基于内容的去重：使用 type + text 的组合作为唯一标识
+    const contentKey = `${item.type}:${item.text}`;
+    if (otherTextHistoryContentSet.has(contentKey)) {
+        // 已存在相同内容，跳过添加
+        return;
+    }
+    
+    // 添加到去重集合
+    otherTextHistoryContentSet.add(contentKey);
+    
+    // 添加到缓存
+    otherTextHistoryCache.push({
+        ...item,
+        timestamp: Date.now(),
+        contentKey: contentKey
+    });
+    
+    // 超过上限时移除最旧的，同时从去重集合中移除
+    while (otherTextHistoryCache.length > TEXT_HISTORY_MAX_LENGTH) {
+        const removed = otherTextHistoryCache.shift();
+        if (removed && removed.contentKey) {
+            otherTextHistoryContentSet.delete(removed.contentKey);
+        }
+    }
+}
+
+/**
+ * 获取其他文本历史缓存
+ * @returns {Array} 其他文本历史缓存数组
+ */
+function getOtherTextHistory() {
+    return otherTextHistoryCache;
+}
+
+/**
+ * 清空其他文本历史缓存
+ */
+function clearOtherTextHistory() {
+    otherTextHistoryCache = [];
+    otherTextHistoryContentSet.clear();
+}
+
+/**
+ * 进入指令文本回溯模式
+ * 保存当前游戏内容，显示指令文本历史界面
  */
 function enterTextHistoryMode() {
-    if (isTextHistoryMode) return;
+    if (isTextHistoryMode || isOtherTextHistoryMode) return;
     
     isTextHistoryMode = true;
     const gameContent = document.getElementById('game-content');
@@ -147,19 +211,19 @@ function enterTextHistoryMode() {
         child.dataset.hiddenByTextHistory = 'true';
     });
     
-    // 创建并显示文本历史界面
-    const historyPanel = createTextHistoryPanel();
+    // 创建并显示指令文本历史界面
+    const historyPanel = createTextHistoryPanel('instruct');
     historyPanel.id = 'text-history-panel';
     gameContent.appendChild(historyPanel);
     
     // 更新选项卡状态
-    updateTextHistoryTabState(true);
+    updateTextHistoryTabState('instruct', true);
     
-    console.log('[TextHistory] 进入文本回溯模式，缓存条数:', textHistoryCache.length);
+    console.log('[TextHistory] 进入指令文本回溯模式，缓存条数:', textHistoryCache.length);
 }
 
 /**
- * 退出文本回溯模式
+ * 退出指令文本回溯模式
  * 恢复之前保存的游戏内容
  */
 function exitTextHistoryMode() {
@@ -189,17 +253,89 @@ function exitTextHistoryMode() {
     });
     
     // 更新选项卡状态
-    updateTextHistoryTabState(false);
+    updateTextHistoryTabState('instruct', false);
     
-    console.log('[TextHistory] 退出文本回溯模式');
+    console.log('[TextHistory] 退出指令文本回溯模式');
+}
+
+/**
+ * 进入其他文本回溯模式
+ * 保存当前游戏内容，显示其他文本历史界面
+ */
+function enterOtherTextHistoryMode() {
+    if (isTextHistoryMode || isOtherTextHistoryMode) return;
+    
+    isOtherTextHistoryMode = true;
+    const gameContent = document.getElementById('game-content');
+    
+    // 检查元素是否存在
+    if (!gameContent) {
+        console.error('[OtherTextHistory] 找不到 game-content 元素');
+        isOtherTextHistoryMode = false;
+        return;
+    }
+    
+    // 隐藏当前游戏内容的所有子元素（保留DOM和事件监听器）
+    Array.from(gameContent.children).forEach(child => {
+        child.style.display = 'none';
+        child.dataset.hiddenByTextHistory = 'true';
+    });
+    
+    // 创建并显示其他文本历史界面
+    const historyPanel = createTextHistoryPanel('other');
+    historyPanel.id = 'other-text-history-panel';
+    gameContent.appendChild(historyPanel);
+    
+    // 更新选项卡状态
+    updateTextHistoryTabState('other', true);
+    
+    console.log('[OtherTextHistory] 进入其他文本回溯模式，缓存条数:', otherTextHistoryCache.length);
+}
+
+/**
+ * 退出其他文本回溯模式
+ * 恢复之前保存的游戏内容
+ */
+function exitOtherTextHistoryMode() {
+    if (!isOtherTextHistoryMode) return;
+    
+    isOtherTextHistoryMode = false;
+    const gameContent = document.getElementById('game-content');
+    
+    // 检查元素是否存在
+    if (!gameContent) {
+        console.error('[OtherTextHistory] 找不到 game-content 元素');
+        return;
+    }
+    
+    // 移除其他文本历史面板
+    const historyPanel = document.getElementById('other-text-history-panel');
+    if (historyPanel) {
+        historyPanel.remove();
+    }
+    
+    // 恢复之前隐藏的游戏内容子元素
+    Array.from(gameContent.children).forEach(child => {
+        if (child.dataset.hiddenByTextHistory === 'true') {
+            child.style.display = '';
+            delete child.dataset.hiddenByTextHistory;
+        }
+    });
+    
+    // 更新选项卡状态
+    updateTextHistoryTabState('other', false);
+    
+    console.log('[OtherTextHistory] 退出其他文本回溯模式');
 }
 
 /**
  * 更新文本回溯选项卡的激活状态
+ * @param {string} type - 'instruct' 指令文本回溯 或 'other' 其他文本回溯
  * @param {boolean} active - 是否激活
  */
-function updateTextHistoryTabState(active) {
-    const textHistoryTab = document.querySelector('.panel-tab-btn[data-tab-id="__text_history__"]');
+function updateTextHistoryTabState(type, active) {
+    const tabId = type === 'other' ? '__other_text_history__' : '__text_history__';
+    const textHistoryTab = document.querySelector(`.panel-tab-btn[data-tab-id="${tabId}"]`);
     if (textHistoryTab) {
         if (active) {
             textHistoryTab.classList.add('active');
@@ -421,7 +557,7 @@ function initWebSocket() {
         console.log('收到对话推进结果:', data);
         if (data.success && data.dialog) {
             updateDialogBox(data.dialog);
-            // 对话框文本已由 handle_talk_draw 统一收集到 web_settlement_texts，无需重复记录
+            // 对话框文本已由 handle_talk_draw 统一收集到 web_instruct_texts，无需重复记录
         }
     });
     
@@ -430,7 +566,7 @@ function initWebSocket() {
         console.log('收到对话跳过结果:', data);
         if (data.success && data.dialog) {
             updateDialogBox(data.dialog);
-            // 对话框文本已由 handle_talk_draw 统一收集到 web_settlement_texts，无需重复记录
+            // 对话框文本已由 handle_talk_draw 统一收集到 web_instruct_texts，无需重复记录
         }
     });
     
@@ -439,7 +575,7 @@ function initWebSocket() {
         console.log('收到对话框状态更新:', data);
         if (data.success && data.dialog) {
             updateDialogBox(data.dialog);
-            // 对话框文本已由 handle_talk_draw 统一收集到 web_settlement_texts，无需重复记录
+            // 对话框文本已由 handle_talk_draw 统一收集到 web_instruct_texts，无需重复记录
         }
     });
     
@@ -1075,16 +1211,31 @@ function renderGameState(state) {
         updateDialogBox(state.dialog);
     }
     
-    // 处理结算文本（包括数值变化和行为描述，用于文本回溯）
-    // settlement_texts 由后端 settle_behavior 和 handle_talk_draw 统一收集
-    if (state.settlement_texts && state.settlement_texts.length > 0) {
-        state.settlement_texts.forEach(text => {
+    // 处理指令文本（包括指令行动描述和指令行动结算，用于指令文本回溯）
+    // instruct_texts 由后端 settle_behavior 和 handle_talk_draw 统一收集
+    if (state.instruct_texts && state.instruct_texts.length > 0) {
+        state.instruct_texts.forEach(text => {
             if (text && text.trim()) {
                 addToTextHistory({
                     type: 'settlement',
                     text: text,
                     font: 'standard',
                     source: 'settle_behavior'
+                });
+            }
+        });
+    }
+    
+    // 处理其他文本（用于其他文本回溯）
+    // other_texts 由后端 io_web.py 统一收集
+    if (state.other_texts && state.other_texts.length > 0) {
+        state.other_texts.forEach(text => {
+            if (text && text.trim()) {
+                addToOtherTextHistory({
+                    type: 'other',
+                    text: text,
+                    font: 'standard',
+                    source: 'io_web'
                 });
             }
         });
@@ -1666,18 +1817,39 @@ function createPanelTabsBar(tabs) {
     // ========== 添加文本回溯选项卡（纯前端功能） ==========
     // 仅在非子面板模式下显示
     if (!isSubPanelMode) {
+        // 创建右对齐容器，包裹两个文本回溯按钮
+        const textHistoryContainer = document.createElement('div');
+        textHistoryContainer.className = 'text-history-tabs-container';
+        
+        // 指令文本回溯选项卡
         const textHistoryBtn = document.createElement('button');
         textHistoryBtn.className = 'panel-tab-btn text-history-tab';
-        textHistoryBtn.textContent = '文本回溯';
+        textHistoryBtn.textContent = '指令文本回溯';
         textHistoryBtn.dataset.tabId = '__text_history__';
         
-        // 如果当前处于文本回溯模式，则激活
+        // 如果当前处于指令文本回溯模式，则激活
         if (isTextHistoryMode) {
             textHistoryBtn.classList.add('active');
         }
         
         textHistoryBtn.onclick = () => clickPanelTab('__text_history__');
-        bar.appendChild(textHistoryBtn);
+        textHistoryContainer.appendChild(textHistoryBtn);
+        
+        // 其他文本回溯选项卡
+        const otherTextHistoryBtn = document.createElement('button');
+        otherTextHistoryBtn.className = 'panel-tab-btn text-history-tab';
+        otherTextHistoryBtn.textContent = '其他文本回溯';
+        otherTextHistoryBtn.dataset.tabId = '__other_text_history__';
+        
+        // 如果当前处于其他文本回溯模式，则激活
+        if (isOtherTextHistoryMode) {
+            otherTextHistoryBtn.classList.add('active');
+        }
+        
+        otherTextHistoryBtn.onclick = () => clickPanelTab('__other_text_history__');
+        textHistoryContainer.appendChild(otherTextHistoryBtn);
+        
+        bar.appendChild(textHistoryContainer);
     }
     
     return bar;
@@ -1713,7 +1885,7 @@ function selectInteractionType(typeId) {
 function clickPanelTab(tabId) {
     console.log('[clickPanelTab] 点击面板选项卡，tabId:', tabId);
     
-    // 文本回溯选项卡：纯前端处理，切换模式
+    // 指令文本回溯选项卡：纯前端处理，切换模式
     if (tabId === '__text_history__') {
         if (isTextHistoryMode) {
             exitTextHistoryMode();
@@ -1723,9 +1895,22 @@ function clickPanelTab(tabId) {
         return;
     }
     
+    // 其他文本回溯选项卡：纯前端处理，切换模式
+    if (tabId === '__other_text_history__') {
+        if (isOtherTextHistoryMode) {
+            exitOtherTextHistoryMode();
+        } else {
+            enterOtherTextHistoryMode();
+        }
+        return;
+    }
+    
     // 如果当前处于文本回溯模式，先退出
     if (isTextHistoryMode) {
         exitTextHistoryMode();
+    }
+    if (isOtherTextHistoryMode) {
+        exitOtherTextHistoryMode();
     }
     
     // 主面板选项卡使用普通按钮点击API（因为它只是保持在主面板）
