@@ -3363,6 +3363,22 @@ body {
     box-shadow: 0 0 8px rgba(100, 150, 200, 0.5);
 }
 
+/* 文本回溯按钮红点提示 */
+.panel-tab-btn.text-history-tab.has-unread {
+    position: relative;
+}
+
+.panel-tab-btn.text-history-tab .unread-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 8px;
+    height: 8px;
+    background-color: #ff4444;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(255, 68, 68, 0.8);
+}
+
 /* 文本回溯面板主容器 */
 .text-history-panel {
     display: flex;

@@ -2179,8 +2179,16 @@
 - [x] 添加 `.text-history-line`、`.text-history-item` 等文本项样式
 - [x] 添加 `.text-history-settlement` 指令结算文本样式
 - [x] 添加 `.text-history-other` 其他文本样式（紫色主题）
+- [x] 添加 `.has-unread` 和 `.unread-dot` 红点提示样式
 
-##### 9. 文档更新
+##### 9. 其他文本回溯红点提示功能（2026-03-09新增）
+- [x] 在 `static/game.js` 中添加 `lastReadOtherTextKey` 变量，记录玩家已阅读的最后一条文本
+- [x] 添加 `hasUnreadOtherText()` 函数，检查是否有未读的其他文本
+- [x] 在 `enterOtherTextHistoryMode()` 中更新 `lastReadOtherTextKey`，将当前最后一条文本标记为已阅读
+- [x] 在 `createPanelTabsBar()` 创建"其他文本回溯"按钮时，调用 `hasUnreadOtherText()` 检查是否显示红点
+- [x] 在 `clearOtherTextHistory()` 中重置 `lastReadOtherTextKey` 为 null
+
+##### 10. 文档更新
 - [x] 更新 `Web绘制模式UI重构说明文档.md` 中的面板选项卡栏章节
 - [x] 添加"2.2.1.2 文本回溯功能"子章节，描述双缓存机制
 - [x] 更新本实现流程文档
