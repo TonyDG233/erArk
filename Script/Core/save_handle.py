@@ -67,8 +67,8 @@ def establish_save_linux(save_id: str):
     Keyword argumentsL
     save_id -- 当前存档id
     """
-    # 如果是web模式
-    if cache.web_mode:
+    # 如果是web模式且不是自动存档
+    if cache.web_mode and save_id != "auto":
         # 清理Web模式图片缓存（避免缓存数据被序列化到存档中）
         try:
             from Script.System.Web_Draw_System.image_processor import clear_image_cache
