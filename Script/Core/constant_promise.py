@@ -786,6 +786,8 @@ class Premise:
     """ 设施 已体检的不需要再次体检 """
     BLACKSMITH_SHOP_OPEN = "blacksmith_shop_open"
     """ 设施 铁匠铺已开放 """
+    DR_ROOM_LEVEL_GE_2 = "dr_room_level_ge_2"
+    """ 设施 博士房间的等级大于等于2级 """
 
     HAVE_MOVED = "ai_moved"
     """ 时间_角色 自己距离上次移动已经至少经过了1小时 """
@@ -3717,3 +3719,5 @@ class Premise:
     """ 复合 交互对象的工作为监狱长或交互对象是助理 """
     DR_HAVE_SEX_POSITION_OR_PENIS_IN_T_ANYPART = "dr_have_sex_position_or_penis_in_t_anypart"
     """ 复合 博士有任意体位或当前阴茎位置为交互对象_任意存在位置 """
+    IN_KITCHEN_OR_IN_DR_ROOM_AND_DR_ROOM_LEVEL_GE_2 = "in_kitchen_or_in_dr_room_and_dr_room_level_ge_2"
+    """ 复合 在厨房或者在等级大于等于2级的博士房间 """

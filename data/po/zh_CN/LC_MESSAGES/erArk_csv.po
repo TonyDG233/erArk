@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-11 08:00+0800\n"
+"POT-Creation-Date: 2026-03-10 15:13+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LANGUAGE-TEAM-EMAIL@ADDRESS>\n"
@@ -20418,6 +20418,10 @@ msgstr ""
 
 #: ./data\csv\Facility_effect.csv:143
 msgid "工作效率加成提升至100%"
+msgstr ""
+
+#: ./data\csv\Facility_effect.csv:146
+msgid "开放新功能：【小厨房】，可以在房间内制作菜谱难度最大为5级的食物"
 msgstr ""
 
 #: ./data\csv\Facility_effect.csv:151

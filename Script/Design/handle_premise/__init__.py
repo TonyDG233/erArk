@@ -1581,3 +1581,19 @@ def handle_dr_have_sex_position_or_penis_in_t_anypart(character_id: int) -> int:
     if handle_penis_in_t_anypart(character_id):
         return 1
     return 0
+
+@add_premise(constant_promise.Premise.IN_KITCHEN_OR_IN_DR_ROOM_AND_DR_ROOM_LEVEL_GE_2)
+def handle_in_kitchen_or_in_dr_room_and_dr_room_level_ge_2(character_id: int) -> int:
+    """
+    在厨房或者在等级大于等于2级的博士房间
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    if handle_in_kitchen(character_id):
+        return 1
+    if handle_in_dr_room(character_id) and handle_dr_room_level_ge_2(character_id):
+        return 1
+    return 0
+

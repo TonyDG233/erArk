@@ -315,6 +315,9 @@ def get_character_cookable_recipes(character_id: int = 0, weight_flag = False) -
         # 难度高于烹饪技能的菜谱直接跳过
         if character_data.ability[43] < recipe.difficulty:
             continue
+        # 如果所在位置是博士房间，则菜谱难度大于5的跳过
+        if handle_premise.handle_in_dr_room(character_id) and recipe.difficulty > 5:
+            continue
         # 根据权重输出列表，最大权重为8，最小权重为1
         if weight_flag:
             weight_num = min(recipe.difficulty, 8)

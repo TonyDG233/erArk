@@ -149,6 +149,19 @@ def handle_blacksmith_shop_open(character_id: int) -> int:
     """
     return cache.rhodes_island.facility_open[13]
 
+@add_premise(constant_promise.Premise.DR_ROOM_LEVEL_GE_2)
+def handle_dr_room_level_ge_2(character_id: int) -> int:
+    """
+    博士房间等级大于等于2级
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    dr_room_lv = cache.rhodes_island.facility_level[23]
+    if dr_room_lv >= 2:
+        return 1
+    return 0
 
 @add_premise(constant_promise.Premise.HAVE_MOVED)
 def handle_have_moved(character_id: int) -> int:
