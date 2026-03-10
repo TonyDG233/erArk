@@ -8,6 +8,8 @@
 let majorTypeClickSelected = false;
 // 当前悬浮展开的大类ID（用于悬浮模式）
 let currentHoveredMajorType = null;
+// 待选中的小类ID（用于从悬浮预览模式点击小类时，等待大类选择完成后再选中小类）
+let pendingMinorTypeSelection = null;
 
 /**
  * 重置悬浮模式状态
@@ -620,12 +622,10 @@ function expandMajorTypePreview(list, majorType, allMajorTypes) {
                 e.stopPropagation();
                 // 标记为点击选中状态
                 setMajorTypeClickSelected(true);
-                // 先选择大类，再选择小类
+                // 设置待选中的小类ID，等待 updateMinorTypeButtons 调用后触发选择
+                pendingMinorTypeSelection = minorType.id;
+                // 选择大类，后端响应 major_type_selected 后会调用 updateMinorTypeButtons
                 selectMajorType(majorType.id);
-                // 短暂延迟后选择小类，确保大类选择完成
-                setTimeout(() => {
-                    selectMinorType(minorType.id);
-                }, 50);
             };
             
             minorContainer.appendChild(minorCard);
@@ -803,6 +803,26 @@ function updateMinorTypeButtons(minorTypes, rememberedMinorType, majorTypeId) {
     // 如果有记忆的小类型，自动触发选择
     if (rememberedMinorType !== null && rememberedMinorType !== undefined) {
         selectMinorType(rememberedMinorType);
+    }
+    
+    // 检查是否有待选中的小类（从悬浮预览模式点击小类时设置）
+    if (pendingMinorTypeSelection !== null) {
+        const pendingMinorId = pendingMinorTypeSelection;
+        pendingMinorTypeSelection = null; // 清空，防止重复触发
+        
+        // 在新渲染的小类列表中找到对应的小类并激活
+        const newMinorContainer = list.querySelector('.interaction-minor-list');
+        if (newMinorContainer) {
+            const targetMinorCard = newMinorContainer.querySelector(`.minor-card[data-id="${pendingMinorId}"]`);
+            if (targetMinorCard) {
+                // 清除其他小类的激活状态
+                newMinorContainer.querySelectorAll('.minor-card').forEach(c => c.classList.remove('active'));
+                // 激活目标小类
+                targetMinorCard.classList.add('active');
+            }
+        }
+        // 触发小类选择
+        selectMinorType(pendingMinorId);
     }
     
     // 切换大类后触发重叠检测（延迟执行确保DOM更新完成）

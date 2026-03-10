@@ -55,29 +55,20 @@ def get_current_minor_type() -> Optional[str]:
 
 def select_major_type(major_type: str) -> Optional[str]:
     """
-    选择大类型，返回对应的小类型（如果有记忆则恢复，否则返回None）
+    选择大类型
     
     Keyword arguments:
     major_type -- 大类型id（字符串标识符，如'mouth'/'hand'/'penis'/'tool'/'arts'/'stop'/'other'）
     
     Returns:
-    Optional[str] -- 该大类下记忆的小类型id（字符串标识符），或None
+    Optional[str] -- 始终返回None（已取消记忆功能）
     """
-    # 保存当前大类的小类选择到记忆
-    if cache.web_current_major_type is not None and cache.web_current_minor_type is not None:
-        cache.web_major_type_memory[cache.web_current_major_type] = cache.web_current_minor_type
-    
     # 切换到新的大类
     cache.web_current_major_type = major_type
     
-    # 从记忆中恢复该大类的小类选择（字典方式，使用get避免KeyError）
-    remembered_minor = cache.web_major_type_memory.get(major_type)
-    if remembered_minor is not None:
-        cache.web_current_minor_type = remembered_minor
-        return remembered_minor
-    else:
-        cache.web_current_minor_type = None
-        return None
+    # 已取消记忆功能：每次切换大类都不再自动选中上次的小类
+    cache.web_current_minor_type = None
+    return None
 
 def select_minor_type(minor_type: str):
     """
@@ -87,9 +78,7 @@ def select_minor_type(minor_type: str):
     minor_type -- 小类型id（字符串标识符，如'mouth_talk'/'hand_touch'等）
     """
     cache.web_current_minor_type = minor_type
-    # 同时更新记忆
-    if cache.web_current_major_type is not None:
-        cache.web_major_type_memory[cache.web_current_major_type] = minor_type
+    # 已取消记忆功能：不再保存小类选择到记忆
 
 
 def clear_selection():
