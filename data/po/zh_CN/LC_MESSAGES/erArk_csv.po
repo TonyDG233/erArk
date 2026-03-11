@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-11 16:53+0800\n"
+"POT-Creation-Date: 2026-03-11 17:05+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LANGUAGE-TEAM-EMAIL@ADDRESS>\n"
@@ -38541,7 +38541,7 @@ msgid "仓储空间扩展模块"
 msgstr ""
 
 #: ./data\csv\Resource.csv:42
-msgid "用于提升仓库容量的扩展模块，可以增加1000资源存储上限。"
+msgid "用于提升仓库容量的扩展模块，可以增加200资源存储上限。"
 msgstr ""
 
 #: ./data\csv\Resource.csv:44

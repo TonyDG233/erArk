@@ -186,9 +186,9 @@ def settle_assembly_line(newdayflag = False, draw_flag = True):
         # 结算模块数量
         cache.rhodes_island.used_extra_warehouse_capacity_module += extra_warehouse_modules
         # 增加仓库容量
-        cache.rhodes_island.warehouse_capacity += extra_warehouse_modules * 1000
+        cache.rhodes_island.warehouse_capacity += extra_warehouse_modules * 200
         # 绘制信息
-        extra_warehouse_modules_text = _("○由于生产了{0}个仓储空间扩展模块，罗德岛仓库容量提升了{1}！\n").format(extra_warehouse_modules, extra_warehouse_modules * 1000)
+        extra_warehouse_modules_text = _("○由于生产了{0}个仓储空间扩展模块，罗德岛仓库容量提升了{1}！\n").format(extra_warehouse_modules, extra_warehouse_modules * 200)
         return_text += extra_warehouse_modules_text
         if draw_flag:
             now_draw = draw.WaitDraw()

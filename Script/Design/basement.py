@@ -133,7 +133,7 @@ def get_base_updata():
 
         # 初始化仓库容量
         if facility_name == _("仓储区"):
-            cache.rhodes_island.warehouse_capacity = facility_effect + cache.rhodes_island.used_extra_warehouse_capacity_module * 1000
+            cache.rhodes_island.warehouse_capacity = facility_effect + cache.rhodes_island.used_extra_warehouse_capacity_module * 200
         # 初始化干员人数上限
         elif facility_name == _("宿舍区"):
             cache.rhodes_island.people_max = facility_effect
