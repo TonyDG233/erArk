@@ -1668,21 +1668,6 @@ class Cache:
         """ Web模式当前选中的药物id """
         self.web_selected_item_id: Optional[int] = None
         """ Web模式当前选中的道具id """
-        # ========== Web对话框相关字段 ==========
-        self.web_dialog_visible: bool = False
-        """ Web对话框是否可见 """
-        self.web_dialog_speaker: str = ""
-        """ Web对话框当前说话者名称 """
-        self.web_dialog_text: str = ""
-        """ Web对话框当前显示的文本 """
-        self.web_dialog_text_color: str = "standard"
-        """ Web对话框文本颜色样式 """
-        self.web_dialog_queue: List[dict] = []
-        """ Web对话框待显示的文本队列 """
-        self.web_dialog_wait_input: bool = False
-        """ Web对话框是否等待用户输入（点击推进） """
-        self.web_minor_dialog_queue: List[dict] = []
-        """ Web小对话框队列（其他角色的台词） """
         self.web_need_full_refresh: bool = False
         """ Web模式是否需要完整刷新（切换交互对象后设置为True） """
         self.web_value_changes: List[dict] = []
@@ -1699,6 +1684,21 @@ class Cache:
         """ Web模式子面板ID：当前显示的子面板指令ID """
         self.web_sub_panel_name: str = ""
         """ Web模式子面板名称：当前显示的子面板名称（用于临时选项卡） """
+        # ========== Web对话框相关字段 ==========
+        self.web_dialog_visible: bool = False
+        """ Web对话框是否可见 """
+        self.web_dialog_speaker: str = ""
+        """ Web对话框当前说话者名称 """
+        self.web_dialog_text: str = ""
+        """ Web对话框当前显示的文本 """
+        self.web_dialog_text_color: str = "standard"
+        """ Web对话框文本颜色样式 """
+        self.web_dialog_queue: List[dict] = []
+        """ Web对话框待显示的文本队列 """
+        self.web_dialog_wait_input: bool = False
+        """ Web对话框是否等待用户输入（点击推进） """
+        self.web_minor_dialog_queue: List[dict] = []
+        """ Web小对话框队列（其他角色的台词） """
         # ==========================================
         # ==========================================
         self.character_data: Dict[int, Character] = {}
