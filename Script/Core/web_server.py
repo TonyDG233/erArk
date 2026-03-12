@@ -104,6 +104,9 @@ button_click_response = None
 wait_response_triggered = False
 input_response = None
 
+# 用于存储事件选项响应
+event_option_response = None
+
 # 全局服务器线程对象
 server_thread = None
 server_running = False
@@ -1870,6 +1873,44 @@ def handle_skip_all_dialogs(data):
         })
 
 
+@socketio.on('event_option_selected')
+def handle_event_option_selected(data):
+    """
+    处理事件选项选择
+    
+    参数：
+    data (dict): 包含 option_id 和 event_id 参数
+    
+    返回值类型：无
+    功能描述：接收前端选择的事件选项，保存到全局变量中
+    """
+    global event_option_response
+    
+    try:
+        option_id = data.get('option_id')
+        event_id = data.get('event_id')
+        
+        logging.info(f"收到事件选项选择: option_id={option_id}, event_id={event_id}")
+        
+        with state_lock:
+            event_option_response = {
+                'option_id': option_id,
+                'event_id': event_id
+            }
+        
+        socketio.emit('event_option_confirmed', {
+            'success': True,
+            'option_id': option_id,
+            'event_id': event_id
+        })
+    except Exception as e:
+        logging.error(f"处理事件选项选择时出错: {str(e)}")
+        socketio.emit('event_option_confirmed', {
+            'success': False,
+            'error': str(e)
+        })
+
+
 @socketio.on('get_settlement_state')
 def handle_get_settlement_state(data):
     """
@@ -2496,6 +2537,68 @@ def get_input_response():
         input_response = None
     
     return response
+
+
+def emit_event_options(options, event_text: str = "", event_style: str = "standard"):
+    """
+    发送事件选项到前端
+    
+    参数：
+    options (list或None): 事件选项列表，每个选项包含 {id, text, event_id}
+                          如果为 None，则表示关闭事件选项弹窗
+    event_text (str): 事件文本，显示在选项上方
+    event_style (str): 事件文本的样式（用于字体颜色等）
+    
+    返回值类型：无
+    功能描述：通过WebSocket通知前端显示事件选项弹窗，包含事件文本和选项
+    """
+    try:
+        if options is None:
+            socketio.emit('event_options', {'visible': False, 'options': [], 'event_text': '', 'event_style': 'standard'})
+        else:
+            socketio.emit('event_options', {
+                'visible': True, 
+                'options': options,
+                'event_text': event_text,
+                'event_style': event_style
+            })
+        logging.debug(f"发送事件选项: options={len(options) if options else 0}, event_text_len={len(event_text)}")
+    except Exception as e:
+        logging.error(f"发送事件选项失败: {str(e)}")
+
+
+def get_event_option_response():
+    """
+    获取事件选项响应
+    
+    参数：无
+    
+    返回值类型：dict或None
+    功能描述：返回用户选择的事件选项，获取后清空
+    """
+    global event_option_response
+    
+    with state_lock:
+        response = event_option_response
+        event_option_response = None
+    
+    return response
+
+
+def clear_event_option_response():
+    """
+    清空事件选项响应
+    
+    参数：无
+    
+    返回值类型：无
+    功能描述：清空之前的事件选项响应
+    """
+    global event_option_response
+    
+    with state_lock:
+        event_option_response = None
+
 
 def start_server():
     """

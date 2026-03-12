@@ -2508,6 +2508,148 @@
     - `init_character_behavior()` 函数开头设置 `cache.web_text_recording_flag = True`
     - `init_character_behavior()` 函数结尾设置 `cache.web_text_recording_flag = False`
 
+
+### 6.4 事件选项系统 ✅
+
+**阶段状态**：已完成
+**完成日期**：2026年3月13日
+
+#### 6.4.1 需求分析
+
+##### 6.4.1.1 问题背景
+- [x] 分析原有事件选项系统在Web模式下的阻塞问题
+- [x] 确定事件选项触发时机：父事件绘制后、子事件选择前
+- [x] 分析事件文本和选项文本的处理流程
+
+**实施记录**：
+- 原有系统使用 `WaitDraw`/`LineFeedWaitDraw` 等待键盘输入，在Web模式下会阻塞
+- 事件选项面板（`Event_option_Panel`、`multi_layer_event_option_Panel`）使用传统的循环等待模式
+- 事件文本由 `DrawEventTextPanel` 绘制，选项由 `SonEventDraw` 绘制
+
+##### 6.4.1.2 设计目标
+- [x] 实现Web模式下事件选项的模态弹窗显示
+- [x] 事件文本显示在弹窗上方，选项列表显示在下方
+- [x] 选项确认后，子事件文本作为对话文本输出
+- [x] 所有文本添加到文本回溯缓存
+
+#### 6.4.2 后端实现
+
+##### 6.4.2.1 事件选项面板修改
+- [x] **event_option_panel.py**: 添加 `_get_event_text_for_web()` 函数获取事件文本
+- [x] **event_option_panel.py**: 添加 `_prepare_event_options_for_web()` 函数准备选项数据
+- [x] **event_option_panel.py**: 添加 `_handle_web_event_options()` 函数统一处理Web模式事件选项
+- [x] **event_option_panel.py**: 修改 `Event_option_Panel.draw()` 添加Web模式判断
+- [x] **event_option_panel.py**: 修改 `multi_layer_event_option_Panel.draw()` 添加Web模式判断
+
+**关键代码路径**：
+```python
+def _handle_web_event_options(son_event_list, character_id):
+    # 1. 准备选项数据
+    options = _prepare_event_options_for_web(son_event_list, character_id)
+    # 2. 获取事件文本
+    event_text_data = _get_event_text_for_web(character_id)
+    # 3. 添加到文本回溯缓存
+    cache.web_instruct_texts.append(...)
+    emit_realtime_text(...)
+    # 4. 发送到前端
+    emit_event_options(options, event_text, event_style)
+    # 5. 等待前端响应
+    while selected_event_id is None:
+        response = get_event_option_response()
+        ...
+    # 6. 关闭弹窗
+    emit_event_options(None)
+    return selected_event_id
+```
+
+##### 6.4.2.2 事件文本绘制修改
+- [x] **draw_event_text_panel.py**: 将 `son_event_flag`、`diy_event_flag` 改为实例属性
+- [x] **draw_event_text_panel.py**: 修改 `draw()` 方法，区分事件文本类型：
+  - 非子事件文本：保存到 `cache.pending_event_text` 供事件选项面板获取
+  - 子事件/DIY事件文本：作为对话文本输出（添加到 `web_instruct_texts` + `add_dialog_text()`）
+
+**关键修改**：
+```python
+def draw(self):
+    if cache.web_mode:
+        if self.son_event_flag or self.diy_event_flag:
+            # 子事件文本作为对话输出
+            emit_realtime_text(output_text, "instruct")
+            add_dialog_text(speaker_name, output_text, final_color, wait_input=True, ...)
+        else:
+            # 其他事件文本保存供选项面板使用
+            cache.pending_event_text = {...}
+```
+
+##### 6.4.2.3 WebSocket事件处理
+- [x] **web_server.py**: 添加 `emit_event_options()` 函数发送事件选项到前端
+- [x] **web_server.py**: 添加 `get_event_option_response()` / `clear_event_option_response()` 函数
+- [x] **web_server.py**: 添加 `handle_submit_event_option()` 处理前端选项提交
+
+**WebSocket事件**：
+| 事件名 | 方向 | 数据格式 |
+|--------|------|----------|
+| `event_options` | 服务端→客户端 | `{options: [...], event_text: str, event_style: str}` |
+| `submit_event_option` | 客户端→服务端 | `{option_id: str, event_id: str}` |
+
+#### 6.4.3 前端实现
+
+##### 6.4.3.1 事件选项弹窗
+- [x] **game.js**: 添加 `event_options` Socket监听器
+- [x] **game.js**: 实现 `showEventOptionsModal()` 函数
+- [x] **game.js**: 实现 `hideEventOptionsModal()` 函数
+- [x] **game.js**: 实现选项点击事件处理
+
+**弹窗结构**：
+```html
+<div class="event-options-modal">
+  <div class="event-modal-content">
+    <div class="event-text-container">事件文本</div>
+    <div class="event-options-container">
+      <button class="event-option-button">选项1</button>
+      <button class="event-option-button">选项2</button>
+      ...
+    </div>
+  </div>
+</div>
+```
+
+##### 6.4.3.2 样式定义
+- [x] **style.css**: 添加 `.event-options-modal` 模态弹窗样式
+- [x] **style.css**: 添加 `.event-modal-content` 内容容器样式
+- [x] **style.css**: 添加 `.event-text-container` 事件文本样式
+- [x] **style.css**: 添加 `.event-option-button` 选项按钮样式
+
+#### 6.4.4 数据流程验证
+
+##### 6.4.4.1 完整流程
+1. [x] 事件触发，`DrawEventTextPanel` 绘制事件文本
+2. [x] 非子事件文本保存到 `cache.pending_event_text`
+3. [x] `event_option_panel` 收集子事件列表
+4. [x] Web模式下调用 `_handle_web_event_options()`
+5. [x] 事件文本和选项添加到 `web_instruct_texts`
+6. [x] 发送 `event_options` 事件到前端
+7. [x] 前端显示事件选项弹窗
+8. [x] 玩家点击选项，前端发送 `submit_event_option`
+9. [x] 后端设置 `character_data.event.son_event_id`
+10. [x] 关闭弹窗，继续事件结算
+11. [x] 子事件文本作为对话文本输出
+
+#### 6.4.5 修改文件清单
+
+| 文件路径 | 修改内容 | 状态 |
+|---------|---------|------|
+| `Script/UI/Panel/event_option_panel.py` | 添加Web模式事件选项处理函数 | ✅ |
+| `Script/UI/Panel/draw_event_text_panel.py` | 修改事件文本绘制逻辑，支持子事件对话输出 | ✅ |
+| `Script/Core/web_server.py` | 添加事件选项WebSocket事件处理 | ✅ |
+| `static/game.js` | 添加事件选项弹窗渲染和交互 | ✅ |
+| `static/css/style.css` | 添加事件选项弹窗样式 | ✅ |
+
+**实施记录**：
+- 完整实现了Web模式下的事件选项系统
+- 事件文本和选项文本均添加到文本回溯缓存，支持回溯查看
+- 子事件选择后的输出文本正确作为对话文本显示
+
 ---
 
 ## 阶段七：素材处理工具 ✅

@@ -673,6 +673,24 @@ function initWebSocket() {
             hideSettlementOverlay();
         }
     });
+    
+    // 接收事件选项事件
+    socket.on('event_options', (data) => {
+        console.log('收到事件选项:', data);
+        if (data.visible && data.options && data.options.length > 0) {
+            showEventOptionsModal(data.options, data.event_text || '', data.event_style || 'standard');
+        } else {
+            hideEventOptionsModal();
+        }
+    });
+    
+    // 接收事件选项确认事件
+    socket.on('event_option_confirmed', (data) => {
+        console.log('收到事件选项确认:', data);
+        if (data.success) {
+            hideEventOptionsModal();
+        }
+    });
 }
 
 /**
@@ -809,6 +827,132 @@ function hideSettlementOverlay() {
             }
         }, 300);
         console.log('[结算提示] 隐藏结算遮罩');
+    }
+}
+
+/**
+ * 显示事件选项弹窗
+ * 当后端触发带选项的事件时调用，在最顶层显示选项供用户选择
+ * @param {Array} options - 选项列表，每个选项包含 {id, text, event_id}
+ * @param {string} eventText - 事件文本，显示在选项上方
+ * @param {string} eventStyle - 事件文本的样式
+ */
+function showEventOptionsModal(options, eventText = '', eventStyle = 'standard') {
+    // 先移除可能存在的旧弹窗
+    hideEventOptionsModal();
+    
+    // 创建弹窗容器
+    const modal = document.createElement('div');
+    modal.id = 'event-options-modal';
+    modal.className = 'event-options-modal';
+    
+    // 创建弹窗内容
+    const content = document.createElement('div');
+    content.className = 'event-options-content';
+    
+    // 如果有事件文本，在上方显示
+    if (eventText && eventText.trim()) {
+        const eventTextContainer = document.createElement('div');
+        eventTextContainer.className = 'event-options-text';
+        
+        // 处理事件文本中的换行符
+        const textLines = eventText.split(/\\n|\n/);
+        textLines.forEach((line, index) => {
+            if (line.trim()) {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'event-options-text-line';
+                lineElement.textContent = line;
+                // 应用样式（如果有对应的字体颜色配置）
+                if (eventStyle && eventStyle !== 'standard' && window.fontConfig && window.fontConfig[eventStyle]) {
+                    const styleConfig = window.fontConfig[eventStyle];
+                    if (styleConfig.foreground) {
+                        lineElement.style.color = styleConfig.foreground;
+                    }
+                }
+                eventTextContainer.appendChild(lineElement);
+            }
+        });
+        
+        content.appendChild(eventTextContainer);
+    }
+    
+    // 创建标题（选项提示）
+    const title = document.createElement('div');
+    title.className = 'event-options-title';
+    title.textContent = '请选择';
+    content.appendChild(title);
+    
+    // 创建选项按钮容器
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'event-options-buttons';
+    
+    // 创建每个选项按钮
+    options.forEach((option, index) => {
+        const button = document.createElement('button');
+        button.className = 'event-option-button';
+        button.textContent = option.text;
+        button.dataset.optionId = option.id;
+        button.dataset.eventId = option.event_id;
+        
+        // 添加点击事件
+        button.addEventListener('click', () => {
+            selectEventOption(option.id, option.event_id);
+        });
+        
+        optionsContainer.appendChild(button);
+    });
+    
+    content.appendChild(optionsContainer);
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    console.log('[事件选项] 显示事件选项弹窗，选项数量:', options.length, '，事件文本长度:', eventText.length);
+}
+
+/**
+ * 隐藏事件选项弹窗
+ */
+function hideEventOptionsModal() {
+    const modal = document.getElementById('event-options-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+            }
+        }, 200);
+        console.log('[事件选项] 隐藏事件选项弹窗');
+    }
+}
+
+/**
+ * 选择事件选项
+ * @param {string} optionId - 选项ID
+ * @param {string} eventId - 事件ID
+ */
+function selectEventOption(optionId, eventId) {
+    console.log('[事件选项] 选择选项:', optionId, '事件ID:', eventId);
+    
+    // 禁用所有按钮，防止重复点击
+    const buttons = document.querySelectorAll('.event-option-button');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+    });
+    
+    // 发送选择到后端
+    if (window.socket && window.socket.connected) {
+        window.socket.emit('event_option_selected', {
+            option_id: optionId,
+            event_id: eventId
+        });
+    } else {
+        console.error('[事件选项] WebSocket未连接，无法发送选择');
+        // 重新启用按钮
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('disabled');
+        });
     }
 }
 

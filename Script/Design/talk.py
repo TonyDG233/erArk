@@ -332,9 +332,9 @@ def handle_talk_draw(character_id: int, talk_text: str, now_talk_id: str, second
                 now_draw.text = now_talk_text
         
         # ========== Web模式处理 ==========
-        # 在Web模式下，将口上文本发送到对话框区域显示，同时记录到文本回溯缓存
+        # 在Web模式下，将口上对话文本发送到对话框区域显示，同时记录到文本回溯缓存
         if hasattr(cache, 'web_mode') and cache.web_mode:
-            # 将描述文本添加到Web结算文本缓存，用于文本回溯功能
+            # 将描述文本添加到Web指令文本缓存，用于文本回溯功能
             if now_talk_text:
                 cache.web_instruct_texts.append(now_talk_text)
                 # 实时推送文本到前端

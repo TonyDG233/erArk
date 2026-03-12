@@ -3,6 +3,7 @@ from Script.Core import cache_control, game_type, get_text, flow_handle, text_ha
 from Script.Design import talk, handle_premise
 from Script.UI.Moudle import draw, panel
 from Script.Config import game_config, normal_config
+import time
 
 cache: game_type.Cache = cache_control.cache
 """ 游戏缓存数据 """
@@ -14,6 +15,114 @@ line_feed.text = "\n"
 line_feed.width = 1
 window_width: int = normal_config.config_normal.text_width
 """ 窗体宽度 """
+
+
+def _get_event_text_for_web(character_id: int) -> dict:
+    """
+    获取Web模式下的事件文本
+    优先从 cache.pending_event_text 获取，如果没有则返回空
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    dict -- 包含 text, style 的字典，如果没有事件文本则返回空字典
+    """
+    if hasattr(cache, 'pending_event_text') and cache.pending_event_text:
+        event_data = cache.pending_event_text
+        # 清空缓存
+        cache.pending_event_text = None
+        return event_data
+    return {}
+
+
+def _prepare_event_options_for_web(son_event_list: list, character_id: int) -> list:
+    """
+    为Web模式准备事件选项数据
+    Keyword arguments:
+    son_event_list -- 子事件列表，每个元素为 [event_id, character_id] 或 event_id
+    character_id -- 角色id
+    Return arguments:
+    list -- 选项数据列表，每个元素为 {id, text, event_id}
+    """
+    options = []
+    for idx, item in enumerate(son_event_list):
+        # 处理不同的列表格式
+        if isinstance(item, list):
+            event_id = item[0]
+        else:
+            event_id = item
+        
+        event_config = game_config.config_event[event_id]
+        option_text = event_config.text.split("|")[0]
+        option_text = talk.code_text_to_draw_text(option_text, character_id)
+        
+        options.append({
+            'id': str(idx),
+            'text': option_text,
+            'event_id': event_id
+        })
+    
+    return options
+
+
+def _handle_web_event_options(son_event_list: list, character_id: int) -> str:
+    """
+    在Web模式下处理事件选项
+    发送选项到前端并等待用户选择
+    同时处理事件文本的显示和文本缓存
+    Keyword arguments:
+    son_event_list -- 子事件列表
+    character_id -- 角色id
+    Return arguments:
+    str -- 选中的事件id
+    """
+    from Script.Core.web_server import emit_event_options, get_event_option_response, clear_event_option_response, emit_realtime_text
+    
+    # 准备选项数据
+    options = _prepare_event_options_for_web(son_event_list, character_id)
+    
+    if not options:
+        return ""
+    
+    # 获取事件文本
+    event_text_data = _get_event_text_for_web(character_id)
+    event_text = event_text_data.get('text', '') if event_text_data else ''
+    event_style = event_text_data.get('style', 'standard') if event_text_data else 'standard'
+    
+    # 将事件文本和选项文本添加到 web_instruct_texts 缓存
+    if event_text:
+        # 去除开头的换行符后添加到缓存
+        clean_event_text = event_text.lstrip('\n')
+        if clean_event_text:
+            cache.web_instruct_texts.append(clean_event_text)
+            emit_realtime_text(clean_event_text, "instruct")
+    
+    # 将选项文本也添加到缓存
+    options_text_list = [f"[{i+1}] {opt['text']}" for i, opt in enumerate(options)]
+    options_combined_text = "\n".join(options_text_list)
+    if options_combined_text:
+        cache.web_instruct_texts.append(options_combined_text)
+        emit_realtime_text(options_combined_text, "instruct")
+    
+    # 清空之前的响应
+    clear_event_option_response()
+    
+    # 发送事件文本和选项到前端
+    emit_event_options(options, event_text, event_style)
+    
+    # 等待前端返回选择
+    selected_event_id = None
+    while selected_event_id is None:
+        response = get_event_option_response()
+        if response is not None:
+            # 响应格式: {'option_id': '0', 'event_id': 'xxx'}
+            selected_event_id = response.get('event_id', '')
+            break
+        time.sleep(0.1)
+    
+    # 关闭事件选项弹窗
+    emit_event_options(None)
+    
+    return selected_event_id
 
 def get_target_chara_diy_instruct(character_id: int = 0):
     """
@@ -104,14 +213,12 @@ class Event_option_Panel:
 
     def draw(self):
         """绘制对象"""
-        line_feed.draw()
         character_data: game_type.Character = cache.character_data[self.character_id]
         behavior_id = character_data.behavior.behavior_id
         father_event_id = character_data.event.event_id
 
         # 获取父事件的前提信息
         father_event_data: game_type.Event = game_config.config_event[father_event_id]
-        self.handle_panel = panel.PageHandlePanel([], SonEventDraw, 20, 1, self.width, 1, 1, 0)
         father_promise = father_event_data.premise
 
         son_event_list = []
@@ -134,9 +241,19 @@ class Event_option_Panel:
 
         # 如果子事件列表为空，则直接返回
         if not len(son_event_list):
-            print("debug 子事件为空，父事件id:", father_event_id)
             return
 
+        # Web 模式处理
+        if hasattr(cache, 'web_mode') and cache.web_mode:
+            selected_event_id = _handle_web_event_options(son_event_list, self.character_id)
+            if selected_event_id:
+                character_data.event.son_event_id = selected_event_id
+            return
+
+        # 非 Web 模式，使用传统绘制方式
+        line_feed.draw()
+        self.handle_panel = panel.PageHandlePanel([], SonEventDraw, 20, 1, self.width, 1, 1, 0)
+        
         while 1:
             py_cmd.clr_cmd()
 
@@ -173,7 +290,6 @@ class multi_layer_event_option_Panel:
 
     def draw(self):
         """绘制对象"""
-        line_feed.draw()
         character_data: game_type.Character = cache.character_data[self.character_id]
         target_character_data = cache.character_data[character_data.target_character_id]
         behavior_id = character_data.behavior.behavior_id
@@ -194,10 +310,20 @@ class multi_layer_event_option_Panel:
         # 如果没有子事件，直接返回
         if len(son_event_list) == 0:
             return
-        else:
-            draw_event_list = []
-            for son_event_id in son_event_list:
-                draw_event_list.append([son_event_id, self.character_id])
+
+        # Web 模式处理
+        if hasattr(cache, 'web_mode') and cache.web_mode:
+            selected_event_id = _handle_web_event_options(son_event_list, self.character_id)
+            if selected_event_id:
+                character_data.event.son_event_id = selected_event_id
+            return
+
+        # 非 Web 模式，使用传统绘制方式
+        line_feed.draw()
+        draw_event_list = []
+        for son_event_id in son_event_list:
+            draw_event_list.append([son_event_id, self.character_id])
+        
         # 如果有子事件，继续绘制
         while 1:
             py_cmd.clr_cmd()
