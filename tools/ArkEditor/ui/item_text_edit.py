@@ -165,6 +165,7 @@ class ItemTextEdit(QWidget):
             {"text": "玩家交互对象腿部描述_短词", "slot": lambda: self.insert_text('{legs_s}')},
             {"text": "玩家交互对象腿部描述_长句", "slot": lambda: self.insert_text('{legs}')},
             {"text": "玩家交互对象脚部描述_短词", "slot": lambda: self.insert_text('{feet_s}')},
+            {"text": "玩家交互对象脚部描述_长句", "slot": lambda: self.insert_text('{feet}')},
         ]
 
         # 服装名菜单项
