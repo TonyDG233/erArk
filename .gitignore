@@ -63,3 +63,6 @@ mod/mod_config.json
 
 # 错误log
 error.log
+
+# 项目分析与学习
+.nexus-map
