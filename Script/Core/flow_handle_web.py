@@ -80,6 +80,21 @@ def _get_sub_panel_info(panel_id):
     return f"panel_{panel_id}", f"面板{panel_id}"
 
 
+def _clear_sub_panel_before_return():
+    """
+    在子面板模式下返回响应前清除上一批绘制内容
+    
+    返回值类型：无
+    功能描述：在子面板模式下，用户每次输入后需要清除上一批绘制内容，
+    避免历史内容堆积。仅在子面板模式下执行清除操作。
+    """
+    from Script.System.Web_Draw_System import is_in_sub_panel_mode
+    from Script.Core.io_web import clear_sub_panel_content
+    
+    if is_in_sub_panel_mode():
+        clear_sub_panel_content()
+
+
 def askfor_all(return_list: List[str]) -> str:
     """
     等待用户选择一个选项
@@ -132,6 +147,8 @@ def askfor_all(return_list: List[str]) -> str:
                     raise PanelChangeException(f"面板从 {initial_panel_id} 切换到 {current_panel_id}")
                 # 如果面板ID没有改变，但刷新信号在return_list中，正常处理
                 if response in return_list:
+                    # 子面板模式下，清除上一批绘制内容，准备绘制新内容
+                    _clear_sub_panel_before_return()
                     if _cmd_valid(response):
                         _cmd_deal(response)
                     return response
@@ -141,6 +158,8 @@ def askfor_all(return_list: List[str]) -> str:
             
             # 检查响应是否在返回列表中
             if response in return_list:
+                # 子面板模式下，清除上一批绘制内容，准备绘制新内容
+                _clear_sub_panel_before_return()
                 # 非刷新信号则输出该响应
                 io_init.era_print(response + "\n")
                 # 然后判断值是否有效，有效则执行该命令

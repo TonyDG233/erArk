@@ -168,10 +168,22 @@
 - **自动滚动**（2026-03-05新增）：每次点击按钮后，`.sub-panel-content` 自动滚动到底部，通过 `scrollToBottom()` 函数实现子面板模式检测
 - **行宽限制**（2026-03-05新增）：子面板内的元素（`.text`, `.text-inline`, `.inline-container`, `.button`, `.inline-button`）设置 `max-width: 100%`，防止190ch宽度的文本溢出子面板区域导致排版错乱
 
+**内容自动清空**（2026-03-16新增）：
+- 在子面板模式下，每次用户输入后会自动清空上一批绘制内容，避免历史内容堆积
+- **触发时机**：`askfor_all()` 返回有效响应之前
+- **实现机制**：
+  - `_clear_sub_panel_before_return()` 辅助函数在 `askfor_all()` 返回前检测子面板模式
+  - 若处于子面板模式，调用 `clear_sub_panel_content()` 清空当前绘制内容
+  - 仅清空当前绘制元素，不影响历史记录缓存
+- **与 `clear_screen()` 的区别**：
+  - `clear_screen()`: 清空后回填历史记录，适用于主界面循环刷新
+  - `clear_sub_panel_content()`: 仅清空当前内容，不回填历史，适用于子面板交互
+
 **相关代码路径**：
 - 缓存字段：`Script/Core/game_type.py` 中的 `web_sub_panel_mode`, `web_sub_panel_id`, `web_sub_panel_name`
 - 辅助函数：`Script/System/Web_Draw_System/tab_menu.py` 中的 `enter_sub_panel_mode()`, `exit_sub_panel_mode()`, `is_in_sub_panel_mode()`
 - 模式设置：`Script/Core/flow_handle_web.py` 中的 `_handle_sub_panel_mode_on_panel_change()`
+- 内容清空：`Script/Core/flow_handle_web.py` 中的 `_clear_sub_panel_before_return()`，`Script/Core/io_web.py` 中的 `clear_sub_panel_content()`
 - 服务器处理：`Script/Core/web_server.py` 中的 `_get_sub_panel_mode_data()`
 - 前端渲染：`static/game.js` 中的 `renderGameState()`
 - 样式定义：`static/css/style.css` 中的 `.sub-panel-mode`, `.sub-panel-header`, `.sub-panel-content`
