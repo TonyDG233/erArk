@@ -700,10 +700,10 @@ def set_medical_price_ratio(
     *,
     target_base: Optional[game_type.Rhodes_Island] = None,
 ) -> None:
-    """更新医疗部收费系数，并重新评估床位上限。
+    """设置待调整的医疗部收费系数，将在第二天结算时生效。
 
     参数:
-        price_ratio (float): 新的收费倍率。
+        price_ratio (float): 新的收费倍率，第二天结算时生效。
         target_base (Optional[game_type.Rhodes_Island]): 指定医疗部所属基地。
     返回:
         None
@@ -713,9 +713,54 @@ def set_medical_price_ratio(
     if rhodes_island is None:
         return
 
-    # 更新收费系数后重新计算床位上限。
-    rhodes_island.medical_price_ratio = max(float(price_ratio), 0.1)
+    # 设置待调整的收费系数，将在第二天结算时生效。
+    rhodes_island.new_medical_price_ratio = max(float(price_ratio), 0.1)
+
+
+def get_new_medical_price_ratio(
+    *,
+    target_base: Optional[game_type.Rhodes_Island] = None,
+) -> float:
+    """读取待调整的医疗部收费系数，若未设置则返回0。
+
+    参数:
+        target_base (Optional[game_type.Rhodes_Island]): 指定医疗部所在基地。
+    返回:
+        float: 待调整的收费系数，0表示未设置。
+    """
+
+    rhodes_island = medical_core._get_rhodes_island(target_base)
+    if rhodes_island is None:
+        return 0.0
+    return float(rhodes_island.new_medical_price_ratio or 0.0)
+
+
+def apply_new_medical_price_ratio(
+    *,
+    target_base: Optional[game_type.Rhodes_Island] = None,
+) -> bool:
+    """应用待调整的收费系数，将其设置为当前收费系数并清空待调整值。
+
+    参数:
+        target_base (Optional[game_type.Rhodes_Island]): 指定医疗部所属基地。
+    返回:
+        bool: 是否进行了更新，True表示已更新，False表示无待调整值。
+    """
+
+    rhodes_island = medical_core._get_rhodes_island(target_base)
+    if rhodes_island is None:
+        return False
+
+    new_ratio = float(rhodes_island.new_medical_price_ratio or 0.0)
+    if new_ratio <= 0:
+        return False
+
+    # 将待调整的收费系数应用为当前收费系数。
+    rhodes_island.medical_price_ratio = new_ratio
+    rhodes_island.new_medical_price_ratio = 0.0
+    # 更新床位上限。
     rhodes_island.medical_bed_limit = medical_core._calculate_medical_bed_limit(rhodes_island)
+    return True
 
 
 def get_patient_priority_mode(

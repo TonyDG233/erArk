@@ -47,6 +47,8 @@ set_patient_state = clinic_patient_management.set_patient_state
 get_patient_table = clinic_patient_management.get_patient_table
 get_medical_price_ratio = clinic_patient_management.get_medical_price_ratio
 set_medical_price_ratio = clinic_patient_management.set_medical_price_ratio
+get_new_medical_price_ratio = clinic_patient_management.get_new_medical_price_ratio
+apply_new_medical_price_ratio = clinic_patient_management.apply_new_medical_price_ratio
 get_patient_priority_mode = clinic_patient_management.get_patient_priority_mode
 set_patient_priority_mode = clinic_patient_management.set_patient_priority_mode
 predict_medical_patient_refresh = clinic_patient_management.predict_medical_patient_refresh
@@ -328,6 +330,10 @@ def settle_medical_department(
     rhodes_island.all_income = 0
     rhodes_island.medical_daily_counters = medical_constant.MedicalDailyCounters()
 
+    # 检查是否有待调整的收费系数，若有则应用并清空。
+    price_ratio_updated = clinic_patient_management.apply_new_medical_price_ratio(target_base=rhodes_island)
+
+    # 结算完成后刷新病人列表，使用更新后的收费系数。
     refresh_medical_patients(target_base=rhodes_island)
     rhodes_island.medical_bed_limit = medical_core._calculate_medical_bed_limit(rhodes_island)
 

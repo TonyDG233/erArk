@@ -1234,6 +1234,8 @@ class Rhodes_Island:
         """ 住院病人数据，patient_id:病人结构 """
         self.medical_price_ratio: float = 0.0
         """ 当前收费系数，0 表示尚未初始化 """
+        self.new_medical_price_ratio: float = 0.0
+        """ 本次要调整的新收费系数，0表示未调整，非0的情况下第二天结算时会将当前收费系数调整为这个值 """
         self.medical_bed_limit: int = 0
         """ 医疗区床位上限（含加成） """
         self.used_hospital_bed_modules: int = 0

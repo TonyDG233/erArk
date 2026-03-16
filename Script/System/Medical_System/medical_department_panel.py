@@ -457,13 +457,18 @@ class PriceSettingSubPanel(_BaseSubPanel):
         """绘制收费设置面板并返回交互按钮列表"""
 
         return_list: List[str] = []
-        ratio = medical_service.get_medical_price_ratio()
+        current_ratio = medical_service.get_medical_price_ratio()
+        new_ratio = medical_service.get_new_medical_price_ratio()
         level = cache.rhodes_island.facility_level.get(6, 0)
-        preview = medical_service.predict_medical_patient_refresh(price_ratio=ratio, level=level)
+        # 使用当前生效的收费系数进行预测
+        preview = medical_service.predict_medical_patient_refresh(price_ratio=current_ratio, level=level)
 
         info_draw = draw.NormalDraw()
         info_draw.width = self.width
-        info_draw.text = _("当前收费系数：{0:.2f} 倍 ({1:.0f}%)\n").format(ratio, ratio * 100)
+        info_draw.text = _("当前收费系数：{0:.2f} 倍 ({1:.0f}%)\n").format(current_ratio, current_ratio * 100)
+        # 如果有待调整的收费系数，显示提示
+        if new_ratio > 0:
+            info_draw.text += _("  └ 待调整系数：{0:.2f} 倍（明日生效）\n").format(new_ratio)
         info_draw.text += _("预计刷新病人数：{0:.0f} 人/日\n").format(preview.get("predicted_count", 0.0))
         info_draw.text += _(
             "刷新倍率修正：{0:.2f} | 收入倍率：{1:.2f}\n"
@@ -513,16 +518,21 @@ class PriceSettingSubPanel(_BaseSubPanel):
     def _adjust_ratio(self, delta_percent: int) -> None:
         """按百分比调整收费系数并刷新提示"""
 
-        ratio = medical_service.get_medical_price_ratio()
-        resolved_ratio = max(ratio + delta_percent / 100.0, 0.10)
+        # 如果有待调整的收费系数，基于待调整系数进行调整；否则基于当前系数
+        new_ratio = medical_service.get_new_medical_price_ratio()
+        if new_ratio > 0:
+            base_ratio = new_ratio
+        else:
+            base_ratio = medical_service.get_medical_price_ratio()
+        resolved_ratio = max(base_ratio + delta_percent / 100.0, 0.10)
         medical_service.set_medical_price_ratio(resolved_ratio)
-        self.feedback_text = _("已调整收费系数至 {0:.2f} 倍").format(resolved_ratio)
+        self.feedback_text = _("已调整收费系数至 {0:.2f} 倍，明天生效").format(resolved_ratio)
 
     def _reset_ratio(self) -> None:
         """将收费系数重置为 1.0"""
 
         medical_service.set_medical_price_ratio(1.0)
-        self.feedback_text = _("收费系数已重置为 1.00 倍")
+        self.feedback_text = _("收费系数已重置为 1.00 倍，明天生效")
 
 
 class MedicalDetailSubPanel(_BaseSubPanel):

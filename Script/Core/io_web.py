@@ -248,6 +248,33 @@ def clear_screen_and_history():
     # 更新Web界面状态（发送空内容）
     update_game_state(cache.current_draw_elements, None)
 
+
+def clear_sub_panel_content():
+    """
+    清空子面板当前绘制内容
+    
+    返回值类型：无
+    仅在子面板模式下清空当前绘制元素，但保留历史记录。
+    用于子面板内用户输入后，清除上一批绘制内容，准备绘制新的一批内容。
+    
+    与 clear_screen() 的区别：
+    - clear_screen(): 清空后回填历史记录，适用于主界面循环刷新
+    - clear_sub_panel_content(): 仅清空当前内容，不回填历史，适用于子面板交互
+    """
+    from Script.System.Web_Draw_System import is_in_sub_panel_mode
+    
+    # 仅在子面板模式下执行
+    if not is_in_sub_panel_mode():
+        return
+    
+    # 清空当前绘制元素
+    _ensure_current_draw_list()
+    cache.current_draw_elements = []
+    
+    # 注意：不更新Web界面状态，让后续绘制操作统一更新
+    # 这样可以避免闪烁，同时减少不必要的数据传输
+
+
 def era_print(string, style="standard", tooltip: str = ""):
     """
     输出文本

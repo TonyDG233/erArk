@@ -82,6 +82,20 @@
   - `clear_screen_and_history()`: 彻底清空当前绘制元素和历史记录（用于进入主界面）
 - **效果**：进入主界面时显示干净的UI，没有之前的残留内容
 
+#### 1.2.4 子面板内容自动清空（2026-03-16新增）
+- [x] 在 `Script/Core/io_web.py` 中添加 `clear_sub_panel_content()` 函数
+- [x] 在 `Script/Core/flow_handle_web.py` 中添加 `_clear_sub_panel_before_return()` 辅助函数
+- [x] 在 `askfor_all()` 的返回点调用 `_clear_sub_panel_before_return()`
+- [x] 确保子面板模式下每次用户输入后自动清空上一批绘制内容
+
+**实施说明（2026-03-16）**：
+- **问题**：子面板中每次用户输入后绘制新内容，但旧内容不会消失，导致内容堆积
+- **解决方案**：
+  - `clear_sub_panel_content()`: 仅清空当前绘制元素，不回填历史（用于子面板交互）
+  - `_clear_sub_panel_before_return()`: 在 `askfor_all()` 返回有效响应前检测子面板模式并清空
+  - 只在 `is_in_sub_panel_mode()` 返回 True 时执行清空
+- **效果**：子面板中仅显示当前这一批绘制内容，不再显示历史内容
+
 ---
 
 ### 1.3 前端页面基础结构
