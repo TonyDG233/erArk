@@ -897,7 +897,7 @@ body {
     display: flex;
     flex-direction: column;
     /* 备用最小高度作为保底，与new-ui-layout保持一致 */
-    min-height: 820px;
+    min-height: 800px;
     background-color: #0a0a0a;
     background-image: repeating-linear-gradient(
         45deg,
@@ -923,7 +923,7 @@ body {
     /* 使用视口高度减去页面其他元素的高度（页头约60px + 页脚及输入区约150px + padding等约40px）*/
     height: calc(100vh - 250px);
     /* 备用最小高度作为保底，需要容纳顶部信息区+主场景区（对话框为绝对定位不占用空间） */
-    min-height: 820px;
+    min-height: 800px;
     gap: 8px;
     /* 作为对话框绝对定位的参考容器 */
     position: relative;
@@ -1697,7 +1697,7 @@ body {
     flex: 1;
     display: flex;
     position: relative;
-    min-height: 34rem; /* 备用最小高度作为保底，确保左侧交互类型按钮完整显示 (原620px) */
+    min-height: 32rem; /* 备用最小高度作为保底，确保左侧交互类型按钮完整显示 (原620px，2026-03-17降低) */
     background-color: #111;
     border-radius: 0.25rem;
     /* 确保绝对定位的子元素不被截断 */
@@ -1709,8 +1709,7 @@ body {
     /* 使用绝对定位，不影响其他元素的布局 */
     position: absolute;
     left: 1.875rem; /* 原30px */
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0.5rem; /* 2026-03-17: 改为上对齐，原为垂直居中 (top: 50% + transform: translateY(-50%)) */
     /* Auto width to fit cards */
     width: auto;
     /* Reset old styles */
@@ -1721,7 +1720,7 @@ body {
     
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start; /* 2026-03-17: 改为上对齐 */
     z-index: 50;
     perspective: 1000px;
     pointer-events: none; /* Layout container passes clicks */
@@ -1733,8 +1732,8 @@ body {
     transform-style: preserve-3d;
     min-width: 8.75rem; /* 强制宽度，防止右侧点击失效 (原140px) */
     padding-right: 1.25rem; /* 预留右侧空间 (原20px) */
-    /* 预留足够高度容纳所有大类卡片（9个大类）*/
-    min-height: 47.8125rem; /* 9 * (4.375 + 0.9375) = 9 * 5.3125 = 47.8125rem */
+    /* 预留足够高度容纳所有大类卡片（7个大类，2026-03-17更新）*/
+    min-height: 37rem; /* 7 * (4.375 + 0.9375) = 7 * 5.3125 = 37.1875rem，取整为37rem */
 }
 
 /* 交互卡片通用样式 */

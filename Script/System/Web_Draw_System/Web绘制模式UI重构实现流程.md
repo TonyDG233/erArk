@@ -1188,7 +1188,7 @@
        - `.interaction-type-list` 改为 `position: relative`，移除 flex 布局，添加固定最小高度
        - `.major-card` 添加 `position: absolute; left: 0;`，top 由 JS 设置
        - `.interaction-minor-list` 改为 `position: absolute; left: 0.9375rem;`（保持左侧缩进），top 由 JS 设置
-  - **效果**：大类卡片在容器中垂直居中排列，位置固定，隐藏其他卡片时激活卡片不会移动位置
+  - **效果**：大类卡片在容器中从顶部开始排列（2026-03-17更新，原为垂直居中），位置固定，隐藏其他卡片时激活卡片不会移动位置
 - [x] 修复点击选中大类后小类列表位置错误的问题（2026-03-04更新）
   - **问题描述**：在 `selectMajorType()` 函数中创建小类列表时，没有设置 `style.top`，导致小类列表默认定位到 `top: 0`（上对齐）
   - **解决方案**：在 `selectMajorType()` 函数中创建小类列表后，从激活卡片的 `style.top` 读取位置，计算并设置小类列表的 `style.top`
@@ -1233,6 +1233,27 @@
     3. 修改 `updateMinorTypeButtons()` 函数：在末尾检查 `pendingMinorTypeSelection`，如果存在则自动选中对应的小类并触发 `selectMinorType()`
   - **修改文件**：`static/js/new_ui_interaction.js`
   - **效果**：从悬浮预览模式点击小类时，一次点击即可正确选中
+
+#### 3.6.11 交互类型面板布局调整（2026-03-17）
+- [x] 将交互类型面板从垂直居中改为垂直上对齐
+  - **修改原因**：优化视觉布局，使交互面板从顶部开始排列，更符合使用习惯
+  - **CSS 修改**（`static/css/style.css`）：
+    1. `.new-ui-interaction-panel`：`top: 50%` + `transform: translateY(-50%)` → `top: 0.5rem`
+    2. `.new-ui-interaction-panel`：`justify-content: center` → `justify-content: flex-start`
+  - **JS 修改**（`static/js/new_ui_interaction.js`）：
+    1. 移除 `centerOffset` 居中偏移计算
+    2. 新增 `TOP_OFFSET = 0.5` 作为固定顶部边距（rem）
+    3. 卡片位置计算：`topPosition = TOP_OFFSET + index * CARD_TOTAL_HEIGHT`
+  - **效果**：交互类型卡片从面板顶部开始向下排列，预留0.5rem顶部边距
+
+- [x] 降低主画面区和容器的最小高度限制
+  - **修改原因**：原min-height过高，适当降低以适配更多屏幕尺寸
+  - **CSS 修改**（`static/css/style.css`）：
+    1. `.new-ui-container`：`min-height: 820px` → `min-height: 800px`
+    2. `.new-ui-layout`：`min-height: 820px` → `min-height: 800px`
+    3. `.new-ui-main-scene`：`min-height: 34rem` → `min-height: 32rem`
+    4. `.interaction-type-list`：`min-height: 47.8125rem`（9大类）→ `min-height: 37rem`（7大类）
+  - **效果**：主画面区高度限制略微降低，适配7个交互大类的实际需求
 
 ### 3.7 对话框区域
 
