@@ -10,7 +10,7 @@
 - `[x]` 已完成
 - `[!]` 遇到问题需调整
 
-**最后更新**：2026年3月10日
+**最后更新**：2026年3月17日
 
 ---
 
@@ -3764,6 +3764,37 @@ web_server 检测 web_sub_panel_mode → 附加 sub_panel_data
 - 记录了测试结果和注意事项
 
 ### 10.4 头部子菜单系统重构 (2026-02-12)
+
+### 10.5 底部布局精简优化 (2026-03-17)
+
+#### 10.5.1 需求说明
+- [x] 移除“滚动到底部”按钮及其功能
+- [x] 移除“跳过输入等待”按钮（保留右键跳过功能）
+- [x] 移除底部“erArk WebUI - 本地运行版本”文本
+- [x] 将缩放控件移动到输入框同一行，右对齐显示
+
+#### 10.5.2 HTML结构修改
+- [x] 删除 `#scroll-to-bottom-btn` 按钮元素
+- [x] 删除 `#skip-wait-btn` 按钮元素
+- [x] 删除 `<p>erArk WebUI - 本地运行版本</p>` 文本
+- [x] 将 `#scale-control-container` 移入 `#persistent-input-container` 内部
+- [x] 新增 `.input-group` 包裹输入框和提交按钮
+
+#### 10.5.3 CSS样式修改
+- [x] 删除 `.scroll-button` 样式定义
+- [x] 修改 `#persistent-input-container` 为 `space-between` 布局
+- [x] 新增 `.input-group` 样式（`flex: 1`, `max-width: 650px`）
+- [x] 修改 `.scale-control-container` 移除 `border-top`，添加 `margin-left: auto` 右对齐
+
+#### 10.5.4 JavaScript修改
+- [x] 删除 `ScrollManager.init()` 中对 `scroll-to-bottom-btn` 的事件监听
+- [x] 删除 `ScrollManager.init()` 中对 `skip-wait-btn` 的事件监听
+- [x] 保留 `WaitManager.requestSkipUntilMain()` 方法（右键跳过功能依赖）
+
+#### 10.5.5 布局效果
+- 底部只显示单行：左侧输入框+提交按钮，右侧缩放控件
+- 界面更加简洁，减少冠余元素
+- 缩放功能保持不变，仅位置调整
 
 #### 10.4.1 需求说明
 - [x] 头部部位位置改为使用双眼中间偏上一点的位置

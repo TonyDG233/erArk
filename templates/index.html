@@ -26,22 +26,20 @@
         </div>
         <div class="game-footer">
             <div id="persistent-input-container">
-                <input type="text" id="persistent-input" placeholder="输入命令或文本...">
-                <button id="persistent-submit-button">提交</button>
+                <div class="input-group">
+                    <input type="text" id="persistent-input" placeholder="输入命令或文本...">
+                    <button id="persistent-submit-button">提交</button>
+                </div>
+                <!-- 缩放控制面板 -->
+                <div id="scale-control-container" class="scale-control-container">
+                    <span class="scale-label">缩放:</span>
+                    <button id="scale-reset-btn" class="scale-button" title="重置缩放">1:1</button>
+                    <button id="scale-decrease-btn" class="scale-button" title="缩小">-</button>
+                    <span id="scale-display" class="scale-display">100%</span>
+                    <button id="scale-increase-btn" class="scale-button" title="放大">+</button>
+                    <button id="auto-scale-toggle-btn" class="scale-button toggle-btn" title="切换自动缩放">自动</button>
+                </div>
             </div>
-            <!-- 缩放控制面板 -->
-            <div id="scale-control-container" class="scale-control-container">
-                <span class="scale-label">缩放:</span>
-                <button id="scale-reset-btn" class="scale-button" title="重置缩放">1:1</button>
-                <button id="scale-decrease-btn" class="scale-button" title="缩小">-</button>
-                <span id="scale-display" class="scale-display">100%</span>
-                <button id="scale-increase-btn" class="scale-button" title="放大">+</button>
-                <button id="auto-scale-toggle-btn" class="scale-button toggle-btn" title="切换自动缩放">自动</button>
-            </div>
-            <p>erArk WebUI - 本地运行版本</p>
-            <!-- 添加手动滚动按钮，解决在某些设备上可能的问题 -->
-            <button id="scroll-to-bottom-btn" class="scroll-button">滚动到底部</button>
-            <button id="skip-wait-btn" class="scroll-button" title="跳过所有等待，直接返回主界面">跳过输入等待</button>
         </div>
     </div>
     <!-- JavaScript 模块 (按依赖顺序加载) -->
