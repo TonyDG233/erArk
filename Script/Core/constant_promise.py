@@ -1595,6 +1595,8 @@ class Premise:
 
     HIDDEN_SEX_MODE_0 = "hidden_sex_mode_0"
     """ 特殊flag_隐奸 自己不在隐奸模式中 """
+    PLAYER_IN_HIDDEN_SEX_MODE = "player_in_hidden_sex_mode"
+    """ 特殊flag_隐奸 玩家在隐奸模式中 """
     PLAYER_NOT_IN_HIDDEN_SEX_MODE = "player_not_in_hidden_sex_mode"
     """ 特殊flag_隐奸 玩家不在隐奸模式中 """
     TARGET_NOT_IN_HIDDEN_SEX_MODE = "target_not_in_hidden_sex_mode"
@@ -3721,3 +3723,5 @@ class Premise:
     """ 复合 博士有任意体位或当前阴茎位置为交互对象_任意存在位置 """
     IN_KITCHEN_OR_IN_DR_ROOM_AND_DR_ROOM_LEVEL_GE_2 = "in_kitchen_or_in_dr_room_and_dr_room_level_ge_2"
     """ 复合 在厨房或者在等级大于等于2级的博士房间 """
+    PLAYER_NOT_H_OR_HIDDEN_SEX_MODE = "player_not_h_or_hidden_sex_mode"
+    """ 复合 当前玩家不在H中或在隐奸模式中 """
