@@ -2685,6 +2685,130 @@ def draw(self):
 - 事件文本和选项文本均添加到文本回溯缓存，支持回溯查看
 - 子事件选择后的输出文本正确作为对话文本显示
 
+### 6.5 结算选项弹窗系统 ✅
+
+**阶段状态**：已完成
+**完成日期**：2026年3月20日
+
+#### 6.5.1 需求分析
+
+##### 6.5.1.1 问题背景
+- [x] 分析结算模式下按钮交互问题
+  - 结算遮罩 z-index: 10000，普通按钮无法被点击
+  - 特定场景（如射精忍耐选择）需要在结算中显示选项按钮
+- [x] 确定触发时机：`cache.web_text_recording_flag` 为 True 时
+- [x] 参考事件选项弹窗实现模式
+
+##### 6.5.1.2 设计目标
+- [x] 实现结算模式下选项按钮的模态弹窗显示
+- [x] 描述文本显示在弹窗上方，按钮列表显示在下方
+- [x] z-index: 15000，与事件选项弹窗一致，高于结算遮罩
+- [x] 按钮数量超过4个时支持滚动条
+
+#### 6.5.2 后端实现
+
+##### 6.5.2.1 缓存字段添加
+- [x] **game_type.py**: 在 Cache 类中添加 `web_settlement_description: str` 字段
+  - 用于预设结算选项的描述文本
+  - 默认为空字符串，可由调用方设置
+
+##### 6.5.2.2 WebSocket事件处理
+- [x] **web_server.py**: 添加全局变量 `settlement_button_response`
+- [x] **web_server.py**: 添加 `emit_settlement_buttons(buttons, description_text)` 函数
+  - 发送按钮列表和描述文本到前端
+  - 支持 `buttons=None` 关闭弹窗
+- [x] **web_server.py**: 添加 `get_settlement_button_response()` 函数获取用户选择
+- [x] **web_server.py**: 添加 `clear_settlement_button_response()` 函数清空响应
+- [x] **web_server.py**: 添加 `handle_settlement_button_selected(data)` 处理器
+
+**WebSocket事件**：
+| 事件名 | 方向 | 数据格式 |
+|--------|------|----------|
+| `settlement_buttons` | 服务端→客户端 | `{visible: bool, buttons: [...], description_text: str}` |
+| `settlement_button_selected` | 客户端→服务端 | `{return_text: str}` |
+| `settlement_button_confirmed` | 服务端→客户端 | `{success: bool}` |
+
+##### 6.5.2.3 流程控制修改
+- [x] **flow_handle_web.py**: 导入结算按钮相关函数
+- [x] **flow_handle_web.py**: 添加 `_handle_settlement_buttons(return_list, saved_other_texts)` 函数
+  - 从 `cache.current_draw_elements` 提取 `type == "button"` 元素
+  - **描述文本获取**（2026-03-21更新）：从传入的 `saved_other_texts` 参数获取最后一段有效文本作为描述（或使用 `cache.web_settlement_description`）
+  - 调用 `emit_settlement_buttons()` 发送到前端
+  - 轮询 `get_settlement_button_response()` 等待用户选择
+  - 执行对应命令并返回结果
+  - **状态清理**（2026-03-21新增）：选择完成后清空按钮元素和描述文本缓存
+- [x] **flow_handle_web.py**: 修改 `askfor_all()` 函数
+  - **在 `update_game_state()` 之前保存 `web_other_texts`**（2026-03-21更新）：因为 `update_game_state()` 会清空 `web_other_texts`
+  - 将保存的 `saved_other_texts` 传递给 `_handle_settlement_buttons()`
+  - 若 `web_text_recording_flag` 为 True，调用 `_handle_settlement_buttons()` 处理结算中的按钮
+
+#### 6.5.3 前端实现
+
+##### 6.5.3.1 结算选项弹窗
+- [x] **game.js**: 添加 `settlement_buttons` Socket监听器
+- [x] **game.js**: 添加 `settlement_button_confirmed` Socket监听器
+- [x] **game.js**: 实现 `showSettlementButtonsModal(buttons, descriptionText)` 函数
+  - 创建弹窗结构：遮罩 + 内容区 + 描述 + 标题 + 按钮列表
+  - 按钮数量 > 4 时添加 `.scrollable` 类启用滚动
+- [x] **game.js**: 实现 `hideSettlementButtonsModal()` 函数
+- [x] **game.js**: 实现 `selectSettlementButton(returnText)` 函数
+
+**弹窗结构**：
+```html
+<div class="settlement-buttons-modal">
+  <div class="settlement-buttons-content">
+    <div class="settlement-buttons-description">描述文本</div>
+    <div class="settlement-buttons-title">请选择</div>
+    <div class="settlement-buttons-container">
+      <button class="settlement-button">按钮1</button>
+      <button class="settlement-button">按钮2</button>
+      ...
+    </div>
+  </div>
+</div>
+```
+
+##### 6.5.3.2 样式定义
+- [x] **style.css**: 添加 `.settlement-buttons-modal` 模态弹窗样式
+  - z-index: 15000，高于结算遮罩
+  - 半透明黑色背景
+- [x] **style.css**: 添加 `.settlement-buttons-content` 内容容器样式
+- [x] **style.css**: 添加 `.settlement-buttons-description` 描述文本样式
+- [x] **style.css**: 添加 `.settlement-buttons-title` 标题样式
+- [x] **style.css**: 添加 `.settlement-buttons-container` 按钮容器样式
+  - `.scrollable` 变体：max-height: 280px，启用滚动条
+- [x] **style.css**: 添加 `.settlement-button` 按钮样式
+  - 包含 hover 和 active 状态
+
+#### 6.5.4 数据流程
+
+1. [x] `askfor_all()` 被调用，检测到 `web_text_recording_flag == True`
+2. [x] **保存描述文本**（2026-03-21更新）：在调用 `update_game_state()` 之前，先复制 `web_other_texts` 到 `saved_other_texts`（因为 `update_game_state()` 会清空 `web_other_texts`）
+3. [x] 调用 `update_game_state()` 更新前端状态
+4. [x] 调用 `_handle_settlement_buttons(return_list, saved_other_texts)`
+5. [x] 从 `cache.current_draw_elements` 提取按钮，从 `saved_other_texts` 提取描述文本
+6. [x] 调用 `emit_settlement_buttons()` 发送数据到前端
+7. [x] 前端 `showSettlementButtonsModal()` 显示弹窗
+8. [x] 用户点击按钮，前端发送 `settlement_button_selected` 事件
+9. [x] 后端接收 `return_text`，设置 `settlement_button_response`
+10. [x] `_handle_settlement_buttons()` 获取响应，执行对应命令
+11. [x] 调用 `emit_settlement_buttons(None)` 关闭弹窗
+12. [x] **状态清理**（2026-03-21新增）：
+    - 清空 `cache.web_settlement_description`
+    - 从 `cache.current_draw_elements` 移除按钮元素
+    - 清空 `cache.web_other_texts`
+13. [x] 返回用户选择的结果
+
+#### 6.5.5 修改文件清单
+
+| 文件路径 | 修改内容 | 状态 |
+|---------|---------|------|
+| `Script/Core/game_type.py` | 添加 `web_settlement_description` 字段 | ✅ |
+| `Script/Core/web_server.py` | 添加结算按钮WebSocket事件处理 | ✅ |
+| `Script/Core/flow_handle_web.py` | 添加 `_handle_settlement_buttons()` 函数，修改 `askfor_all()` | ✅ |
+| `static/game.js` | 添加结算按钮弹窗渲染和交互 | ✅ |
+| `static/css/style.css` | 添加结算按钮弹窗样式 | ✅ |
+
 ---
 
 ## 阶段七：素材处理工具 ✅

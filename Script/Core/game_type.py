@@ -1692,6 +1692,8 @@ class Cache:
         """ Web模式其他文本列表（io_web.py中的其他文本），用于其他文本回溯显示 """
         self.web_text_recording_flag: bool = False
         """ Web模式文本记录标志，在角色行为循环期间为True，用于控制era_print的文本记录 """
+        self.web_settlement_description: str = ""
+        """ Web模式结算选项描述文本，在绘制结算按钮前设置，用于在结算选项弹窗中显示说明文本 """
         self.pending_event_text: Optional[dict] = None
         """ 待显示的事件文本，由 draw_event_text_panel 保存，供 event_option_panel 使用 """
         self.web_sub_panel_mode: bool = False
