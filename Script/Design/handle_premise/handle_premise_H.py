@@ -229,6 +229,31 @@ def handle_penis_not_in_t_mouse(character_id: int) -> int:
     """
     return not handle_penis_in_t_mouse(character_id)
 
+@add_premise(constant_promise.Premise.PENIS_IN_T_DEEP_THROAT)
+def handle_penis_in_t_deep_throat(character_id: int) -> int:
+    """
+    当前阴茎位置为交互对象_深喉中
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    character_data = cache.character_data[character_id]
+    target_data = cache.character_data[character_data.target_character_id]
+    if target_data.h_state.insert_position == 15:
+        return 1
+    return 0
+
+@add_premise(constant_promise.Premise.PENIS_NOT_IN_T_DEEP_THROAT)
+def handle_penis_not_in_t_deep_throat(character_id: int) -> int:
+    """
+    当前阴茎位置不为交互对象_深喉中
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    return not handle_penis_in_t_deep_throat(character_id)
 
 @add_premise(constant_promise.Premise.PENIS_IN_T_BREAST)
 def handle_penis_in_t_breast(character_id: int) -> int:
@@ -473,6 +498,18 @@ def handle_penis_in_t_mouse_or_hand(character_id: int) -> int:
         return 1
     return 0
 
+@add_premise(constant_promise.Premise.PENIS_IN_T_MOUSE_OR_DEEP_THROAT)
+def handle_penis_in_t_mouse_or_deep_throat(character_id: int) -> int:
+    """
+    当前阴茎位置为交互对象_口交中或深喉中
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    if handle_penis_in_t_mouse(character_id) or handle_penis_in_t_deep_throat(character_id):
+        return 1
+    return 0
 
 @add_premise(constant_promise.Premise.PENIS_IN_T_VAGINA_OR_WOMB)
 def handle_penis_in_t_vagina_or_womb(character_id: int) -> int:
