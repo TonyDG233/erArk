@@ -278,12 +278,14 @@ def update_semen_dirty(character_id: int, part_cid: int, part_type: int, semen_c
             pl_character_data.h_state.pre_sex_position = pl_character_data.h_state.current_sex_position
             pl_character_data.h_state.current_sex_position = -1
             character_data.h_state.insert_position = -1
-    # A部位射精时如果已经持有灌肠肛塞道具，且设置已开启，则结算精液灌肠
+    # A部位射精时，精液量大于1级，已经持有灌肠肛塞道具，且设置已开启，且A没有道具，则结算精液灌肠
     if (
         part_type == 0 and
         part_cid == 8 and
+        now_semen_data[2] > 1 and
         cache.all_system_setting.base_setting[8] and
-        handle_premise.handle_have_clyster_tools(0)
+        handle_premise.handle_have_clyster_tools(0) and
+        handle_premise.handle_target_a_empty(0)
         ):
         character_data.dirty.a_clean = 3
         if now_semen_data[2] <= 3:
