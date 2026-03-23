@@ -10,7 +10,7 @@
 - `[x]` 已完成
 - `[!]` 遇到问题需调整
 
-**最后更新**：2026年3月17日
+**最后更新**：2026年3月23日
 
 ---
 
@@ -4360,6 +4360,44 @@ children.forEach(child => {
 | `Script/Design/talk.py` | 修改口上文本处理调用实时推送 | ✅ |
 | `Script/Design/settle_behavior.py` | 修改结算文本处理调用实时推送 | ✅ |
 | `static/game.js` | 添加 `realtime_text` 事件监听器 | ✅ |
+
+### 10.12 修复子面板模式下地图对不齐问题 (2026-03-23)
+
+#### 10.12.1 问题描述
+- 在将移动面板等其他面板作为子面板绘制后，地图AA字符画再次出现列错位的问题
+- 之前在 10.6 节已修复的地图对齐功能在子面板模式下失效
+
+#### 10.12.2 问题原因
+- 子面板模式下，DOM 结构发生变化：
+  ```
+  gameContent
+    ├─ sub-panel-header
+    └─ sub-panel-content  ← 子面板内容在此容器内
+         └─ inline-container
+              ├─ map-line (地图行)
+              └─ ...
+  ```
+- 之前的修复方案在 `renderGameState()` 中调用 `normalizeMapBlocks(gameContent)`
+- 但 `normalizeMapBlocks()` 函数只检查传入根元素的直接子元素（`root.children`）
+- 在子面板模式下，`.map-line` 元素不是 `gameContent` 的直接子元素，而是嵌套在 `.sub-panel-content` 容器中
+- 因此函数找不到 `.map-line` 元素，无法执行宽度规范化
+
+#### 10.12.3 修复方案
+- [x] **修改调用参数**：将 `normalizeMapBlocks(gameContent)` 改为 `normalizeMapBlocks(contentContainer)`
+- [x] `contentContainer` 变量已在渲染流程前定义：
+  - 子面板模式：`gameContent.querySelector('.sub-panel-content')`
+  - 普通模式：`gameContent`
+- [x] 这样无论是否处于子面板模式，都会传入正确的内容容器
+
+#### 10.12.4 修改文件清单
+| 文件路径 | 修改内容 | 状态 |
+|---------|---------|------|
+| `static/game.js` | 修改 `normalizeMapBlocks()` 调用，使用 `contentContainer` 替代 `gameContent` | ✅ |
+
+#### 10.12.5 技术总结
+- 子面板模式引入了额外的 DOM 层级（`.sub-panel-header` 和 `.sub-panel-content`）
+- 需要确保所有依赖 DOM 结构的处理函数考虑子面板模式下的容器变化
+- `contentContainer` 是渲染过程中的标准内容容器引用，应优先使用
 
 ---
 

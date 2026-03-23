@@ -12,7 +12,7 @@
 9. [地图渲染系统](#9-地图渲染系统)
 10. [文件结构规划](#10-文件结构规划)
 
-**最后更新**: 2026年3月17日
+**最后更新**: 2026年3月23日
 
 **重要架构说明**:
 - 采用单页面应用架构：所有面板统一使用 `index.html`
@@ -879,6 +879,7 @@ image/立绘/干员/{角色名}/
 2. **分组处理**：`normalizeMapBlocks()` 函数将连续的 `map-line` 元素分组
 3. **宽度同步**：计算组内所有行的最大像素宽度，为每行设置 `min-width` 统一宽度
 4. **居中显示**：使用 `map-group` 和 `map-group-inner` 容器实现整体居中
+5. **子面板模式适配**：`normalizeMapBlocks()` 需要接收正确的内容容器（`contentContainer`），在子面板模式下为 `.sub-panel-content`，普通模式下为 `gameContent`
 
 #### 9.3.3 分组逻辑
 - 地图行之间可能存在换行元素（`text-break`、空div等）
@@ -917,6 +918,7 @@ image/立绘/干员/{角色名}/
 | 各行起点不对齐 | 行首空格数量不同 | `_normalize_map_leading_spaces()` 规范化 |
 | Emoji宽度异常 | Python与浏览器字符宽度计算差异 | 前端JS统一设置 `min-width` |
 | 行间断开分组 | 换行元素中断分组 | 分组时忽略换行/空元素 |
+| 子面板模式下地图错位 | `normalizeMapBlocks()` 传入错误的根容器 | 使用 `contentContainer` 而非 `gameContent`（详见流程文档10.12节） |
 
 ---
 

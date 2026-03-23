@@ -1665,7 +1665,8 @@ function renderGameState(state) {
     }
 
     // 规范化地图渲染宽度
-    normalizeMapBlocks(gameContent);
+    // 使用 contentContainer 而非 gameContent，确保子面板模式下也能正确找到 .map-line 元素
+    normalizeMapBlocks(contentContainer);
     
     // 更新对话框状态（如果状态数据中包含对话框信息）
     // 注意：不在此处添加对话框到历史缓存，因为 socket 事件已经处理
