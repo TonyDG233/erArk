@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-24 19:12+0800\n"
+"POT-Creation-Date: 2026-03-27 00:36+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LANGUAGE-TEAM-EMAIL@ADDRESS>\n"
@@ -50308,6 +50308,54 @@ msgstr ""
 msgid "黑色丝质夹克"
 msgstr ""
 
+#: ./data\character\1022_撷英调香师.csv:4
+msgid "撷英调香师"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:13
+msgid "几颗不知名的种子，来自米诺斯。莱娜寄来的时候没有交代养护方式，但你知道它们会在疗养庭院里长得很好。"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:14
+msgid "调香师莱娜，在与博士和罗德岛医疗部沟通后，将疗养庭院暂时交予干员波登可负责，并主动申请外派至米诺斯地区，担任新建立的雅赛努斯办事处的负责人，为当地建立感染者医疗体系。"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:28
+msgid "绿色花朵宽发带"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:29
+msgid "黑色紧身项圈"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:30
+msgid "白色宽袖长外衣"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:31
+msgid "绿色抹胸围裙"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:32
+msgid "棕色战术胸挂"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:34
+msgid "浅绿色百褶长裙"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:35
+msgid "黑色交叉高跟鞋"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:36
+msgid "花藤木质法杖"
+msgstr ""
+
+#: ./data\character\1022_撷英调香师.csv:37
+msgid "绿色方形腰包"
+msgstr ""
+
 #: ./data\character\1023_归溟幽灵鲨.csv:4
 msgid "归溟幽灵鲨"
 msgstr ""
@@ -50692,42 +50740,6 @@ msgstr ""
 msgid "黑色职业高跟鞋"
 msgstr ""
 
-#: ./data\character\1040_蒂拉.csv:4
-msgid "蒂拉"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:13
-msgid "便身武器包"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:14
-msgid "直接与黑钢创始人接触的黑钢国际的成员。达维镇的事件尘埃落定后和海伦娜一起在某处等待某人。"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:31
-msgid "蓝色拼接夹克"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:32
-msgid "白色运动背心"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:34
-msgid "深灰色运动短袜"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:35
-msgid "黑蓝拼色运动鞋"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:36
-msgid "黑色战术飞刀"
-msgstr ""
-
-#: ./data\character\1040_蒂拉.csv:37
-msgid "露营套装"
-msgstr ""
-
 #: ./data\character\1041_新约能天使.csv:4
 msgid "新约能天使"
 msgstr ""
@@ -50898,6 +50910,54 @@ msgstr ""
 
 #: ./data\character\1047_溯光星源.csv:37
 msgid "深褐色装甲长筒靴"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:4
+msgid "赤刃明霄陈"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:13
+msgid "一枚铜制剑格，朴实无华，为实战防护而铸。常见于炎国武侠故事中，承载着许多人年少时的憧憬。"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:14
+msgid "陈，前龙门高级警司，前龙门近卫局特别督察组组长，毕业于维多利亚皇家近卫学校，成绩优异，表现突出。后辞去职务，正式成为罗德岛的一员。依本人意愿，任务多以外派为主，为各地外派干员提供有力支援以及现场指导。"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:27
+msgid "红色交叉束带"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:28
+msgid "深蓝开叉连衣"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:29
+msgid "白色紧身衣"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:30
+msgid "白色无指手套"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:31
+msgid "黑色修身短裤"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:33
+msgid "黑色皮质大腿环"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:34
+msgid "黑色长款皮靴"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:35
+msgid "赤霄"
+msgstr ""
+
+#: ./data\character\1050_赤刃明霄陈.csv:36
+msgid "书刀"
 msgstr ""
 
 #: ./data\character\1067_厄尔苏拉.csv:4
@@ -51330,54 +51390,6 @@ msgstr ""
 
 #: ./data\character\1477_阿斯帕齐娅.csv:37
 msgid "银色金属手提箱"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:4
-msgid "梅捷缇克缇"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:13
-msgid "远古法杖"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:14
-msgid "简称缇缇。是佩佩和莎草上学时期的好友。"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:29
-msgid "黄金猫眼头饰"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:30
-msgid "科技风宽松夹克"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:31
-msgid "黑白拼色马甲"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:32
-msgid "灰色紧身衣"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:33
-msgid "黑色开叉短裙"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:34
-msgid "黑色过膝长筒袜"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:35
-msgid "黑色厚底机能靴"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:36
-msgid "圣甲虫权杖"
-msgstr ""
-
-#: ./data\character\1478_梅捷缇克缇.csv:37
-msgid "白色飘逸长饰带"
 msgstr ""
 
 #: ./data\character\1502_弑君者.csv:4
@@ -52244,6 +52256,58 @@ msgstr ""
 msgid "长款包臀裙"
 msgstr ""
 
+#: ./data\character\4031_复奏.csv:4
+msgid "复奏"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:13
+msgid "一张手绘的乐团工作人员通行证。复奏郑重其事地将它交给你，并承诺你，凭借此证，你可以免费欣赏乐团的所有演出。"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:14
+msgid "复奏，新沃尔西尼知名乐团的经理人，在观察到新沃尔西尼的诸多权力人物都与罗德岛有千丝万缕的关系后，主动联系罗德岛寻求商业合作，以期扩大乐团的知名度。基于本人的意愿，也会参与一部分外勤任务。"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:27
+msgid "黑色蝴蝶结发饰"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:28
+msgid "亮蓝色领带"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:29
+msgid "深绿色毛领大衣"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:30
+msgid "白色花边衬衫"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:31
+msgid "棕色百褶短裙"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:32
+msgid "黑色长筒丝袜"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:33
+msgid "皮质战术腿环"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:34
+msgid "金属装饰高跟鞋"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:35
+msgid "长柄法杖"
+msgstr ""
+
+#: ./data\character\4031_复奏.csv:36
+msgid "幽灵玩偶挂饰"
+msgstr ""
+
 #: ./data\character\4032_但书.csv:4
 msgid "但书"
 msgstr ""
@@ -52484,6 +52548,42 @@ msgstr ""
 msgid "战术腿包"
 msgstr ""
 
+#: ./data\character\4052_寻澜.csv:4
+msgid "寻澜"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:13
+msgid "一张圈出了哥伦比亚某几处地点的地图，还附着那些美丽风光的照片。或许下一次她就会带着你一同前往。"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:14
+msgid "黑钢先遣小组队员蒂拉，代号寻澜。工作能力极强，现由本人申请，以合作干员的身份于罗德岛就职，拓展黑钢与罗德岛合作的前期情报搜集工作。"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:31
+msgid "蓝色拼接夹克"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:32
+msgid "白色运动背心"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:34
+msgid "深灰色运动短袜"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:35
+msgid "黑蓝拼色运动鞋"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:36
+msgid "黑色战术飞刀"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:37
+msgid "露营套装"
+msgstr ""
+
 #: ./data\character\4055_鸿雪.csv:4
 msgid "鸿雪"
 msgstr ""
@@ -52530,6 +52630,54 @@ msgstr ""
 
 #: ./data\character\4055_鸿雪.csv:38
 msgid "红色装饰飘带"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:4
+msgid "缇缇"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:13
+msgid "一块正反面都没有任何痕迹的空白陶片。缇缇将它交给你保管，你可以在必要时拿给她看，让她保持谦卑和警醒。"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:14
+msgid "法尔贾万达巴德博物馆现任馆长梅捷缇克缇，只有朋友才可以称她“缇缇”。现以外勤干员的身份与罗德岛展开合作。她也希望能尽自己的全力，修复萨尔贡与米诺斯的关系。"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:29
+msgid "黄金猫眼头饰"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:30
+msgid "科技风宽松夹克"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:31
+msgid "黑白拼色马甲"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:32
+msgid "灰色紧身衣"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:33
+msgid "黑色开叉短裙"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:34
+msgid "黑色过膝长筒袜"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:35
+msgid "黑色厚底机能靴"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:36
+msgid "圣甲虫权杖"
+msgstr ""
+
+#: ./data\character\4056_缇缇.csv:37
+msgid "白色飘逸长饰带"
 msgstr ""
 
 #: ./data\character\4058_佩佩.csv:4
