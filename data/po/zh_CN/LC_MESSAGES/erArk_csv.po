@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-03-27 00:36+0800\n"
+"POT-Creation-Date: 2026-03-27 18:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LANGUAGE-TEAM-EMAIL@ADDRESS>\n"
@@ -4369,538 +4369,542 @@ msgid "结算阴茎蹭耳朵中"
 msgstr ""
 
 #: ./data\csv\Behavior_Data.csv:598
+msgid "结算深喉口交中"
+msgstr ""
+
+#: ./data\csv\Behavior_Data.csv:599
 msgid "结算素股中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:600
+#: ./data\csv\Behavior_Data.csv:601
 msgid "结算帽子交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:601
+#: ./data\csv\Behavior_Data.csv:602
 msgid "结算眼镜交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:602
+#: ./data\csv\Behavior_Data.csv:603
 msgid "结算耳饰交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:603
+#: ./data\csv\Behavior_Data.csv:604
 msgid "结算脖饰交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:604
+#: ./data\csv\Behavior_Data.csv:605
 msgid "结算口罩交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:605
+#: ./data\csv\Behavior_Data.csv:606
 msgid "结算上衣交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:606
+#: ./data\csv\Behavior_Data.csv:607
 msgid "结算胸衣交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:607
+#: ./data\csv\Behavior_Data.csv:608
 msgid "结算手套交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:608
+#: ./data\csv\Behavior_Data.csv:609
 msgid "结算裙子交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:609
+#: ./data\csv\Behavior_Data.csv:610
 msgid "结算内裤交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:610
+#: ./data\csv\Behavior_Data.csv:611
 msgid "结算袜子交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:611
+#: ./data\csv\Behavior_Data.csv:612
 msgid "结算鞋子交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:612
+#: ./data\csv\Behavior_Data.csv:613
 msgid "结算武器交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:613
+#: ./data\csv\Behavior_Data.csv:614
 msgid "结算裤子交中"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:615
+#: ./data\csv\Behavior_Data.csv:616
 msgid "结算恢复意识后发现头发出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:616
+#: ./data\csv\Behavior_Data.csv:617
 msgid "结算恢复意识后发现脸部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:617
+#: ./data\csv\Behavior_Data.csv:618
 msgid "结算恢复意识后发现口腔出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:618
+#: ./data\csv\Behavior_Data.csv:619
 msgid "结算恢复意识后发现胸部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:619
+#: ./data\csv\Behavior_Data.csv:620
 msgid "结算恢复意识后发现腋部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:620
+#: ./data\csv\Behavior_Data.csv:621
 msgid "结算恢复意识后发现手部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:621
+#: ./data\csv\Behavior_Data.csv:622
 msgid "结算恢复意识后发现小穴出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:622
+#: ./data\csv\Behavior_Data.csv:623
 msgid "结算恢复意识后发现子宫出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:623
+#: ./data\csv\Behavior_Data.csv:624
 msgid "结算恢复意识后发现后穴出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:624
+#: ./data\csv\Behavior_Data.csv:625
 msgid "结算恢复意识后发现尿道出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:625
+#: ./data\csv\Behavior_Data.csv:626
 msgid "结算恢复意识后发现腿部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:626
+#: ./data\csv\Behavior_Data.csv:627
 msgid "结算恢复意识后发现脚部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:627
+#: ./data\csv\Behavior_Data.csv:628
 msgid "结算恢复意识后发现尾巴出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:628
+#: ./data\csv\Behavior_Data.csv:629
 msgid "结算恢复意识后发现兽角出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:629
+#: ./data\csv\Behavior_Data.csv:630
 msgid "结算恢复意识后发现兽耳出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:630
+#: ./data\csv\Behavior_Data.csv:631
 msgid "结算恢复意识后发现胃部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:631
+#: ./data\csv\Behavior_Data.csv:632
 msgid "结算恢复意识后发现胯部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:632
+#: ./data\csv\Behavior_Data.csv:633
 msgid "结算恢复意识后发现腹部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:633
+#: ./data\csv\Behavior_Data.csv:634
 msgid "结算恢复意识后发现背部出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:635
+#: ./data\csv\Behavior_Data.csv:636
 msgid "结算恢复意识后发现帽子出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:636
+#: ./data\csv\Behavior_Data.csv:637
 msgid "结算恢复意识后发现眼镜出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:637
+#: ./data\csv\Behavior_Data.csv:638
 msgid "结算恢复意识后发现耳饰出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:638
+#: ./data\csv\Behavior_Data.csv:639
 msgid "结算恢复意识后发现脖饰出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:639
+#: ./data\csv\Behavior_Data.csv:640
 msgid "结算恢复意识后发现口饰出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:640
+#: ./data\csv\Behavior_Data.csv:641
 msgid "结算恢复意识后发现上衣出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:641
+#: ./data\csv\Behavior_Data.csv:642
 msgid "结算恢复意识后发现胸衣出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:642
+#: ./data\csv\Behavior_Data.csv:643
 msgid "结算恢复意识后发现手套出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:643
+#: ./data\csv\Behavior_Data.csv:644
 msgid "结算恢复意识后发现下衣出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:644
+#: ./data\csv\Behavior_Data.csv:645
 msgid "结算恢复意识后发现内裤出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:645
+#: ./data\csv\Behavior_Data.csv:646
 msgid "结算恢复意识后发现袜子出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:646
+#: ./data\csv\Behavior_Data.csv:647
 msgid "结算恢复意识后发现鞋子出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:647
+#: ./data\csv\Behavior_Data.csv:648
 msgid "结算恢复意识后发现武器出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:648
+#: ./data\csv\Behavior_Data.csv:649
 msgid "结算恢复意识后发现附属物出现精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:650
+#: ./data\csv\Behavior_Data.csv:651
 msgid "结算恢复意识后发现内裤被偷走"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:651
+#: ./data\csv\Behavior_Data.csv:652
 msgid "结算恢复意识后发现袜子被偷走"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:653
+#: ./data\csv\Behavior_Data.csv:654
 msgid "结算获得思慕"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:654
+#: ./data\csv\Behavior_Data.csv:655
 msgid "结算获得恋慕"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:655
+#: ./data\csv\Behavior_Data.csv:656
 msgid "结算获得恋人(含赠予信物)"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:656
+#: ./data\csv\Behavior_Data.csv:657
 msgid "结算获得爱侣"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:657
+#: ./data\csv\Behavior_Data.csv:658
 msgid "结算获得屈从"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:658
+#: ./data\csv\Behavior_Data.csv:659
 msgid "结算获得驯服"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:659
+#: ./data\csv\Behavior_Data.csv:660
 msgid "结算获得宠物(含赠予信物)"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:660
+#: ./data\csv\Behavior_Data.csv:661
 msgid "结算获得奴隶"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:662
+#: ./data\csv\Behavior_Data.csv:663
 msgid "结算获得受精"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:663
+#: ./data\csv\Behavior_Data.csv:664
 msgid "结算受精失败"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:664
+#: ./data\csv\Behavior_Data.csv:665
 msgid "结算获得妊娠"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:665
+#: ./data\csv\Behavior_Data.csv:666
 msgid "结算获得临盆"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:666
+#: ./data\csv\Behavior_Data.csv:667
 msgid "生产前的对话"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:667
+#: ./data\csv\Behavior_Data.csv:668
 msgid "生产后的对话+获得产后"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:668
+#: ./data\csv\Behavior_Data.csv:669
 msgid "结算获得育儿"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:669
+#: ./data\csv\Behavior_Data.csv:670
 msgid "结算育儿完成"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:670
+#: ./data\csv\Behavior_Data.csv:671
 msgid "结算幼女长成萝莉"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:671
+#: ./data\csv\Behavior_Data.csv:672
 msgid "结算萝莉长成少女"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:673
+#: ./data\csv\Behavior_Data.csv:674
 msgid "初次见面"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:674
+#: ./data\csv\Behavior_Data.csv:675
 msgid "每日打招呼"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:676
+#: ./data\csv\Behavior_Data.csv:677
 msgid "新周目告别"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:678
+#: ./data\csv\Behavior_Data.csv:679
 msgid "以队长身份出发执行外勤委托"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:679
+#: ./data\csv\Behavior_Data.csv:680
 msgid "以队长身份完成外勤委托归舰"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:680
+#: ./data\csv\Behavior_Data.csv:681
 msgid "被邀请加入群交，开始前往群交地点"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:682
+#: ./data\csv\Behavior_Data.csv:683
 msgid "被任命为本地外交官"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:683
+#: ./data\csv\Behavior_Data.csv:684
 msgid "被解除本地外交官的任命"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:684
+#: ./data\csv\Behavior_Data.csv:685
 msgid "被任命为外派外交官"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:685
+#: ./data\csv\Behavior_Data.csv:686
 msgid "被解除外派外交官的任命"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:687
+#: ./data\csv\Behavior_Data.csv:688
 msgid "被选为助理"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:688
+#: ./data\csv\Behavior_Data.csv:689
 msgid "不再为助理"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:689
+#: ./data\csv\Behavior_Data.csv:690
 msgid "关闭智能跟随"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:690
+#: ./data\csv\Behavior_Data.csv:691
 msgid "开启智能跟随"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:691
+#: ./data\csv\Behavior_Data.csv:692
 msgid "要求前往博士所在位置"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:692
+#: ./data\csv\Behavior_Data.csv:693
 msgid "要求前往办公室"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:693
+#: ./data\csv\Behavior_Data.csv:694
 msgid "关闭辅佐服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:694
+#: ./data\csv\Behavior_Data.csv:695
 msgid "开启辅佐服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:695
+#: ./data\csv\Behavior_Data.csv:696
 msgid "关闭送饭服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:696
+#: ./data\csv\Behavior_Data.csv:697
 msgid "开启帮忙买午饭服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:697
+#: ./data\csv\Behavior_Data.csv:698
 msgid "开启亲手做午饭服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:698
+#: ./data\csv\Behavior_Data.csv:699
 msgid "开启亲手做三餐服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:699
+#: ./data\csv\Behavior_Data.csv:700
 msgid "关闭早安服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:700
+#: ./data\csv\Behavior_Data.csv:701
 msgid "开启早上叫起床服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:701
+#: ./data\csv\Behavior_Data.csv:702
 msgid "开启早安吻服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:702
+#: ./data\csv\Behavior_Data.csv:703
 msgid "开启早安咬服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:703
+#: ./data\csv\Behavior_Data.csv:704
 msgid "关闭晚安服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:704
+#: ./data\csv\Behavior_Data.csv:705
 msgid "开启晚上催睡觉服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:705
+#: ./data\csv\Behavior_Data.csv:706
 msgid "开启晚安吻服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:706
+#: ./data\csv\Behavior_Data.csv:707
 msgid "开启晚安咬服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:707
+#: ./data\csv\Behavior_Data.csv:708
 msgid "关闭同居服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:708
+#: ./data\csv\Behavior_Data.csv:709
 msgid "开启同居服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:709
+#: ./data\csv\Behavior_Data.csv:710
 msgid "关闭助攻服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:710
+#: ./data\csv\Behavior_Data.csv:711
 msgid "开启助攻服务"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:712
+#: ./data\csv\Behavior_Data.csv:713
 msgid "被要求每天上交内裤"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:713
+#: ./data\csv\Behavior_Data.csv:714
 msgid "被要求每天上交袜子"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:714
+#: ./data\csv\Behavior_Data.csv:715
 msgid "被要求以后不再穿胸衣"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:715
+#: ./data\csv\Behavior_Data.csv:716
 msgid "被要求以后睡觉时不穿衣服裸睡"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:716
+#: ./data\csv\Behavior_Data.csv:717
 msgid "在每日招呼时上交今天的内裤"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:717
+#: ./data\csv\Behavior_Data.csv:718
 msgid "在每日招呼时上交今天的袜子"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:718
+#: ./data\csv\Behavior_Data.csv:719
 msgid "被要求每天穿不同的袜子"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:719
+#: ./data\csv\Behavior_Data.csv:720
 msgid "被要求白天时戴着乳头夹"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:720
+#: ./data\csv\Behavior_Data.csv:721
 msgid "被要求白天时戴着阴蒂夹"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:721
+#: ./data\csv\Behavior_Data.csv:722
 msgid "被要求白天时V里插着振动棒"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:722
+#: ./data\csv\Behavior_Data.csv:723
 msgid "被要求白天时A里插着振动棒"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:723
+#: ./data\csv\Behavior_Data.csv:724
 msgid "被要求睡觉时戴着乳头夹"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:724
+#: ./data\csv\Behavior_Data.csv:725
 msgid "被要求睡觉时戴着阴蒂夹"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:725
+#: ./data\csv\Behavior_Data.csv:726
 msgid "被要求睡觉时V里插着振动棒"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:726
+#: ./data\csv\Behavior_Data.csv:727
 msgid "被要求睡觉时A里插着振动棒"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:727
+#: ./data\csv\Behavior_Data.csv:728
 msgid "被要求洗澡时不再清洗阴道内的精液"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:728
+#: ./data\csv\Behavior_Data.csv:729
 msgid "被要求每天晚上睡前都要自慰"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:729
+#: ./data\csv\Behavior_Data.csv:730
 msgid "被要求禁止自慰"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:730
+#: ./data\csv\Behavior_Data.csv:731
 msgid "被要求晚上睡觉不锁门"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:731
+#: ./data\csv\Behavior_Data.csv:732
 msgid "被要求禁止逆推"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:732
+#: ./data\csv\Behavior_Data.csv:733
 msgid "被要求进行吮吸与吞咽力练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:733
+#: ./data\csv\Behavior_Data.csv:734
 msgid "被要求进行腋下夹持力练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:734
+#: ./data\csv\Behavior_Data.csv:735
 msgid "被要求进行胸部夹持力练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:735
+#: ./data\csv\Behavior_Data.csv:736
 msgid "被要求进行手部灵活度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:736
+#: ./data\csv\Behavior_Data.csv:737
 msgid "被要求进行足部灵活度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:737
+#: ./data\csv\Behavior_Data.csv:738
 msgid "被要求进行阴道紧致度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:738
+#: ./data\csv\Behavior_Data.csv:739
 msgid "被要求进行肠道紧致度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:739
+#: ./data\csv\Behavior_Data.csv:740
 msgid "被要求进行尾巴灵活度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:740
+#: ./data\csv\Behavior_Data.csv:741
 msgid "被要求进行触手灵活度练习"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:742
+#: ./data\csv\Behavior_Data.csv:743
 msgid "获得被浅层催眠素质"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:743
+#: ./data\csv\Behavior_Data.csv:744
 msgid "获得被深层催眠素质"
 msgstr ""
 
-#: ./data\csv\Behavior_Data.csv:744
+#: ./data\csv\Behavior_Data.csv:745
 msgid "获得被完全催眠素质"
 msgstr ""
 
@@ -49792,38 +49796,6 @@ msgstr ""
 msgid "飘逸黑纱披风"
 msgstr ""
 
-#: ./data\character\0891_娜斯提.csv:4
-msgid "娜斯提"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:13
-msgid "研究装置"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:14
-msgid "莱茵生命工程科主任，女妖，因为厌倦战争离开卡兹戴尔来到哥伦比亚并进入莱茵生命，梦想是建设能够飞在空中的移动城市作为萨卡兹的应许之地。其构建的空间结构被塞雷娅认为不符合安全规范但却能够自洽。协助克丽斯腾建设万星园，希望能通过这次的数据接近自己的目标。事件结束后与缪尔赛思一起参加了赫默的伦理会议。"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:31
-msgid "银色护目镜"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:33
-msgid "棕色长风衣"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:36
-msgid "黑色工装长裤"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:37
-msgid "黑色工程靴"
-msgstr ""
-
-#: ./data\character\0891_娜斯提.csv:38
-msgid "多功能测量仪"
-msgstr ""
-
 #: ./data\character\0893_雅拉.csv:4
 msgid "雅拉"
 msgstr ""
@@ -49838,6 +49810,10 @@ msgstr ""
 
 #: ./data\character\0893_雅拉.csv:29
 msgid "白色单片眼镜"
+msgstr ""
+
+#: ./data\character\0893_雅拉.csv:30
+msgid "棕色长风衣"
 msgstr ""
 
 #: ./data\character\0893_雅拉.csv:32
@@ -52560,27 +52536,35 @@ msgstr ""
 msgid "黑钢先遣小组队员蒂拉，代号寻澜。工作能力极强，现由本人申请，以合作干员的身份于罗德岛就职，拓展黑钢与罗德岛合作的前期情报搜集工作。"
 msgstr ""
 
-#: ./data\character\4052_寻澜.csv:31
-msgid "蓝色拼接夹克"
+#: ./data\character\4052_寻澜.csv:15
+msgid "#2244d7"
 msgstr ""
 
 #: ./data\character\4052_寻澜.csv:32
+msgid "蓝色拼接夹克"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:33
 msgid "白色运动背心"
 msgstr ""
 
 #: ./data\character\4052_寻澜.csv:34
-msgid "深灰色运动短袜"
+msgid "黑色工装长裤"
 msgstr ""
 
 #: ./data\character\4052_寻澜.csv:35
-msgid "黑蓝拼色运动鞋"
+msgid "深灰色运动短袜"
 msgstr ""
 
 #: ./data\character\4052_寻澜.csv:36
-msgid "黑色战术飞刀"
+msgid "黑蓝拼色运动鞋"
 msgstr ""
 
 #: ./data\character\4052_寻澜.csv:37
+msgid "黑色战术飞刀"
+msgstr ""
+
+#: ./data\character\4052_寻澜.csv:38
 msgid "露营套装"
 msgstr ""
 
@@ -53894,6 +53878,10 @@ msgstr ""
 
 #: ./data\character\4211_雪猎.csv:37
 msgid "谢拉格特制捕兽弩"
+msgstr ""
+
+#: ./data\character\4212_娜斯提.csv:4
+msgid "娜斯提"
 msgstr ""
 
 #: ./data\character\4212_娜斯提.csv:13
