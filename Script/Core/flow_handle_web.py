@@ -5,7 +5,7 @@
 重新实现流程控制函数，适配Web UI
 """
 from Script.Core import cache_control, io_init, constant
-from Script.Core.web_server import get_button_response, get_wait_response, get_input_response, update_game_state, update_input_request
+from Script.Core.web_server import get_button_response, get_wait_response, get_input_response, update_game_state, update_input_request, emit_settlement_buttons, get_settlement_button_response, clear_settlement_button_response
 import time
 from typing import List, Optional
 
@@ -95,6 +95,90 @@ def _clear_sub_panel_before_return():
         clear_sub_panel_content()
 
 
+def _handle_settlement_buttons(return_list: List[str], saved_other_texts: Optional[List[str]] = None) -> Optional[str]:
+    """
+    处理结算模式下的按钮显示
+    
+    参数:
+    return_list (List[str]): 可选择的返回值列表
+    saved_other_texts (List[str]): 保存的其他文本列表（因为 update_game_state 会清空 web_other_texts）
+    
+    返回值类型：Optional[str]
+    功能描述：在结算模式下，从当前绘制元素中提取按钮，
+    通过WebSocket发送到前端结算选项弹窗中显示，
+    等待用户选择后返回选中的按钮值。
+    如果没有按钮，返回None让主流程继续正常处理。
+    
+    注意：由于在 web_text_recording_flag 为 True 时，文本元素会被
+    发送到 web_other_texts 而不是 current_draw_elements，因此描述文本
+    需要从 saved_other_texts 中获取（因为 update_game_state 会清空 web_other_texts）。
+    """
+    # 从当前绘制元素中提取按钮
+    buttons = []
+    
+    elements = getattr(cache, 'current_draw_elements', []) or []
+    for elem in elements:
+        if isinstance(elem, dict):
+            if elem.get('type') == 'button':
+                # 提取按钮信息
+                buttons.append({
+                    'text': elem.get('text', ''),
+                    'return_text': elem.get('return_text', ''),
+                    'tooltip': elem.get('tooltip', '')
+                })
+    
+    # 如果没有按钮，返回None让主流程继续
+    if not buttons:
+        return None
+    
+    # 检查是否有预设的描述文本
+    description_text = getattr(cache, 'web_settlement_description', '')
+    
+    # 如果没有预设描述文本，从 saved_other_texts 中获取
+    # （因为 update_game_state 会清空 web_other_texts，所以需要在调用前保存）
+    if not description_text and saved_other_texts:
+        # 过滤非空文本
+        valid_texts = [t.strip() for t in saved_other_texts if isinstance(t, str) and t.strip() and t.strip() != '\n']
+        if valid_texts:
+            # 使用最后一段文本作为描述（通常是选项说明）
+            description_text = valid_texts[-1]
+    
+    # 清空之前的响应
+    clear_settlement_button_response()
+    
+    # 发送按钮到前端
+    emit_settlement_buttons(buttons, description_text)
+    
+    # 等待用户选择
+    response = None
+    while response is None:
+        response = get_settlement_button_response()
+        if response is not None:
+            # 验证响应是否在返回列表中
+            if response in return_list:
+                # 关闭结算选项弹窗
+                emit_settlement_buttons(None)
+                # 清空描述文本缓存
+                cache.web_settlement_description = ""
+                # 清空当前绘制元素中的按钮，避免下次重复显示
+                cache.current_draw_elements = [
+                    elem for elem in cache.current_draw_elements 
+                    if not (isinstance(elem, dict) and elem.get('type') == 'button')
+                ]
+                # 清空用于描述的其他文本缓存
+                cache.web_other_texts = []
+                # 执行关联的命令
+                if _cmd_valid(response):
+                    _cmd_deal(response)
+                return response
+            else:
+                # 无效响应，继续等待
+                response = None
+        time.sleep(0.1)
+    
+    return None
+
+
 def askfor_all(return_list: List[str]) -> str:
     """
     等待用户选择一个选项
@@ -117,10 +201,25 @@ def askfor_all(return_list: List[str]) -> str:
     # 记录进入时的面板ID，用于检测面板切换
     initial_panel_id = getattr(cache, 'now_panel_id', None)
     
+    # 在 update_game_state 之前保存 web_other_texts
+    # 因为 update_game_state 会清空 web_other_texts，而结算按钮需要用到其中的描述文本
+    saved_other_texts = None
+    if getattr(cache, 'web_text_recording_flag', False):
+        other_texts = getattr(cache, 'web_other_texts', [])
+        if other_texts:
+            saved_other_texts = other_texts.copy()
+    
     # 更新Web界面状态
     update_game_state(cache.current_draw_elements, None)
     # 将当前的返回列表保存到缓存中
     cache.current_return_list = return_list
+    
+    # 检查是否处于结算模式（web_text_recording_flag 为 True）
+    # 如果是，则需要将按钮显示在结算选项弹窗中
+    if getattr(cache, 'web_text_recording_flag', False):
+        response = _handle_settlement_buttons(return_list, saved_other_texts)
+        if response is not None:
+            return response
     
     # Web版本中，轮询等待用户响应
     response = None

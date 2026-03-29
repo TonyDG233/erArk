@@ -1597,3 +1597,16 @@ def handle_in_kitchen_or_in_dr_room_and_dr_room_level_ge_2(character_id: int) ->
         return 1
     return 0
 
+@add_premise(constant_promise.Premise.PLAYER_NOT_H_OR_HIDDEN_SEX_MODE)
+def handle_player_not_h_or_hidden_sex_mode(character_id: int) -> int:
+    """
+    玩家不在H模式或在隐奸模式中
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    if handle_not_h(character_id) or handle_player_in_hidden_sex_mode(character_id):
+        return 1
+    return 0
+

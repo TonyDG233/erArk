@@ -351,10 +351,8 @@ const ScrollManager = {
         // 获取滚动指示器元素
         this.indicator = document.getElementById('scroll-indicator');
         
-        // 获取容器和按钮元素
+        // 获取容器元素
         const gameContainer = document.getElementById('game-container');
-        const scrollButton = document.getElementById('scroll-to-bottom-btn');
-        const skipWaitButton = document.getElementById('skip-wait-btn');
         
         // 辅助函数：检查是否处于新UI模式
         const isNewUIMode = () => {
@@ -403,19 +401,6 @@ const ScrollManager = {
             this.indicator.addEventListener('click', () => {
                 scrollToBottom();
                 this.hideIndicator();
-            });
-        }
-        
-        // 为滚动按钮添加点击事件
-        if (scrollButton) {
-            scrollButton.addEventListener('click', () => {
-                scrollToBottom();
-            });
-        }
-
-        if (skipWaitButton) {
-            skipWaitButton.addEventListener('click', () => {
-                WaitManager.requestSkipUntilMain();
             });
         }
         

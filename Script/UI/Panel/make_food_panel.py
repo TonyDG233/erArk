@@ -75,6 +75,36 @@ class Make_food_Panel:
             line = draw.LineDraw("+", self.width)
             line.draw()
 
+            # 筛选和排序按钮
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○筛选和排序：\n")
+            info_draw.draw()
+            filter_text, sort_text = self.get_filter_sort_status_text()
+            filter_text = "[{0}]".format(filter_text)
+            sort_text = "[{0}]".format(sort_text)
+            empty_draw = draw.NormalDraw()
+            empty_draw.text = "  "
+            empty_draw.draw()
+            filter_button = draw.LeftButton(
+                filter_text,
+                _("[筛选]"),
+                int(self.width),
+                cmd_func=self.open_filter_panel,
+            )
+            filter_button.draw()
+            return_list.append(filter_button.return_text)
+            line_feed.draw()
+            empty_draw.draw()
+            sort_button = draw.LeftButton(
+                sort_text,
+                _("[排序]"),
+                int(self.width),
+                cmd_func=self.open_sort_panel,
+            )
+            sort_button.draw()
+            return_list.append(sort_button.return_text)
+            line_feed.draw()
+
             # 加料说明
             now_seasoning_name = game_config.config_seasoning[self.special_seasoning].name
             now_draw = draw.NormalDraw()
@@ -124,15 +154,12 @@ class Make_food_Panel:
             line_feed.draw()
             line_feed.draw()
 
-
             # 食物面板
             now_draw = draw.NormalDraw()
             now_draw.text = _("○选择要制作的食物：\n")
             # now_draw.width = 1
             now_draw.draw()
-            food_name_list = list(
-                cooking.get_cook_from_makefood_data_by_food_type(self.now_panel).items()
-            )
+            food_name_list = cooking.get_filtered_sorted_cook_data(self.now_panel)
             # 将调味增加进去
             food_name_list = [(x[0], x[1], self.special_seasoning) for x in food_name_list]
             
@@ -159,9 +186,7 @@ class Make_food_Panel:
         """
         self.now_panel = food_type
 
-        food_name_list = list(
-            cooking.get_cook_from_makefood_data_by_food_type(self.now_panel).items()
-        )
+        food_name_list = cooking.get_filtered_sorted_cook_data(self.now_panel)
         # 将调味增加进去
         food_name_list = [(x[0], x[1], self.special_seasoning) for x in food_name_list]
 
@@ -172,6 +197,291 @@ class Make_food_Panel:
     def choice_seasoning(self, seasoning_cid):
         """选择味道"""
         self.special_seasoning = seasoning_cid
+
+    def get_filter_sort_status_text(self) -> tuple:
+        """
+        获取筛选和排序的状态文本
+        Return arguments:
+        tuple -- (筛选状态文本, 排序状态文本)
+        """
+        # 类型名称映射
+        type_name_map = {
+            0: _("正餐"), 1: _("零食"), 2: _("饮品"), 3: _("酒类"),
+            4: _("乳制品"), 5: _("预制食物"), 8: _("加料咖啡"), 9: _("其他")
+        }
+        difficulty_name_map = {-1: _("无"), 0: _("简单(0-3)"), 1: _("中等(4-6)"), 2: _("困难(7+)")}
+        time_name_map = {-1: _("无"), 0: _("快速(≤30分)"), 1: _("中等(31-60分)"), 2: _("耗时(61+分)")}
+        sort_type_name_map = {0: _("无"), 1: _("难度"), 2: _("时间"), 3: _("类型")}
+        sort_order_name_map = {0: _("升序"), 1: _("降序")}
+
+        # 构建筛选状态文本
+        filter_parts = []
+        filter_type = cache.rhodes_island.makefood_filter_type
+        filter_difficulty = cache.rhodes_island.makefood_filter_difficulty
+        filter_time = cache.rhodes_island.makefood_filter_time
+        
+        if filter_type:
+            type_names = [type_name_map.get(t, str(t)) for t in filter_type]
+            filter_parts.append(_("类型:{0}").format(",".join(type_names)))
+        if filter_difficulty != -1:
+            filter_parts.append(_("难度:{0}").format(difficulty_name_map[filter_difficulty]))
+        if filter_time != -1:
+            filter_parts.append(_("时间:{0}").format(time_name_map[filter_time]))
+        
+        if filter_parts:
+            filter_text = _("筛选：{0}").format(" ".join(filter_parts))
+        else:
+            filter_text = _("筛选：无")
+
+        # 构建排序状态文本
+        sort_type = cache.rhodes_island.makefood_sort_type
+        sort_order = cache.rhodes_island.makefood_sort_order
+        
+        if sort_type != 0:
+            sort_text = _("排序：{0}{1}").format(
+                sort_type_name_map[sort_type],
+                sort_order_name_map[sort_order]
+            )
+        else:
+            sort_text = _("排序：无")
+
+        return filter_text, sort_text
+
+    def open_filter_panel(self):
+        """
+        打开筛选设置面板
+        设置筛选时会重置排序
+        """
+        # 类型名称映射
+        type_name_map = {
+            0: _("正餐"), 1: _("零食"), 2: _("饮品"), 3: _("酒类"),
+            4: _("乳制品"), 5: _("预制食物"), 8: _("加料咖啡"), 9: _("其他")
+        }
+        difficulty_options = [
+            (-1, _("不限")), (0, _("简单(0-3)")), (1, _("中等(4-6)")), (2, _("困难(7+)"))
+        ]
+        time_options = [
+            (-1, _("不限")), (0, _("快速(≤30分)")), (1, _("中等(31-60分)")), (2, _("耗时(61+分)"))
+        ]
+        
+        while 1:
+            py_cmd.clr_cmd()
+            return_list = []
+            
+            title_draw = draw.TitleLineDraw(_("筛选设置"), self.width)
+            title_draw.draw()
+            
+            # 类型筛选（标签模式，点击切换）
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○类型筛选（点击切换）：\n")
+            info_draw.draw()
+            
+            current_filter_type = cache.rhodes_island.makefood_filter_type
+            for type_id, type_name in type_name_map.items():
+                if type_id in current_filter_type:
+                    button_text = f"[√{type_name}]"
+                    style = "onbutton"
+                else:
+                    button_text = f"[{type_name}]"
+                    style = "standard"
+                type_button = draw.CenterButton(
+                    button_text,
+                    f"type_{type_id}",
+                    int(self.width / 10),
+                    cmd_func=self.toggle_filter_type,
+                    args=(type_id,),
+                )
+                type_button.draw()
+                return_list.append(type_button.return_text)
+            line_feed.draw()
+            line_feed.draw()
+            
+            # 难度筛选
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○难度筛选：\n")
+            info_draw.draw()
+            
+            current_difficulty = cache.rhodes_island.makefood_filter_difficulty
+            for diff_id, diff_name in difficulty_options:
+                if diff_id == current_difficulty:
+                    button_text = f"[●{diff_name}]"
+                else:
+                    button_text = f"[{diff_name}]"
+                diff_button = draw.CenterButton(
+                    button_text,
+                    f"diff_{diff_id}",
+                    int(self.width / 10),
+                    cmd_func=self.set_filter_difficulty,
+                    args=(diff_id,),
+                )
+                diff_button.draw()
+                return_list.append(diff_button.return_text)
+            line_feed.draw()
+            line_feed.draw()
+            
+            # 时间筛选
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○时间筛选：\n")
+            info_draw.draw()
+            
+            current_time = cache.rhodes_island.makefood_filter_time
+            for time_id, time_name in time_options:
+                if time_id == current_time:
+                    button_text = f"[● {time_name}]"
+                else:
+                    button_text = f"[  {time_name}]"
+                time_button = draw.CenterButton(
+                    button_text,
+                    f"time_{time_id}",
+                    int(self.width / 10),
+                    cmd_func=self.set_filter_time,
+                    args=(time_id,),
+                )
+                time_button.draw()
+                return_list.append(time_button.return_text)
+            line_feed.draw()
+            line_feed.draw()
+            
+            # 清除筛选和返回按钮
+            clear_button = draw.CenterButton(_("[清除所有筛选]"), _("清除筛选"), int(self.width / 2))
+            clear_button.draw()
+            return_list.append(clear_button.return_text)
+            back_button = draw.CenterButton(_("[返回]"), _("返回"), int(self.width / 2))
+            back_button.draw()
+            return_list.append(back_button.return_text)
+            line_feed.draw()
+            
+            yrn = flow_handle.askfor_all(return_list)
+            if yrn == back_button.return_text:
+                break
+            elif yrn == clear_button.return_text:
+                self.clear_filter()
+
+    def toggle_filter_type(self, type_id: int):
+        """切换类型筛选"""
+        # 设置筛选时重置排序
+        cache.rhodes_island.makefood_sort_type = 0
+        cache.rhodes_island.makefood_sort_order = 0
+        
+        if type_id in cache.rhodes_island.makefood_filter_type:
+            cache.rhodes_island.makefood_filter_type.remove(type_id)
+        else:
+            cache.rhodes_island.makefood_filter_type.append(type_id)
+
+    def set_filter_difficulty(self, difficulty: int):
+        """设置难度筛选"""
+        # 设置筛选时重置排序
+        cache.rhodes_island.makefood_sort_type = 0
+        cache.rhodes_island.makefood_sort_order = 0
+        
+        cache.rhodes_island.makefood_filter_difficulty = difficulty
+
+    def set_filter_time(self, time_level: int):
+        """设置时间筛选"""
+        # 设置筛选时重置排序
+        cache.rhodes_island.makefood_sort_type = 0
+        cache.rhodes_island.makefood_sort_order = 0
+        
+        cache.rhodes_island.makefood_filter_time = time_level
+
+    def clear_filter(self):
+        """清除所有筛选"""
+        cache.rhodes_island.makefood_filter_type = []
+        cache.rhodes_island.makefood_filter_difficulty = -1
+        cache.rhodes_island.makefood_filter_time = -1
+
+    def open_sort_panel(self):
+        """
+        打开排序设置面板
+        设置排序时会重置筛选
+        """
+        sort_type_options = [
+            (0, _("无")), (1, _("按难度")), (2, _("按时间")), (3, _("按类型"))
+        ]
+        sort_order_options = [
+            (0, _("升序")), (1, _("降序"))
+        ]
+        
+        while 1:
+            py_cmd.clr_cmd()
+            return_list = []
+            
+            title_draw = draw.TitleLineDraw(_("排序设置"), self.width)
+            title_draw.draw()
+            
+            # 排序维度
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○排序维度：\n")
+            info_draw.draw()
+            
+            current_sort_type = cache.rhodes_island.makefood_sort_type
+            for sort_id, sort_name in sort_type_options:
+                if sort_id == current_sort_type:
+                    button_text = f"[●{sort_name}]"
+                else:
+                    button_text = f"[{sort_name}]"
+                sort_button = draw.CenterButton(
+                    button_text,
+                    f"sort_{sort_id}",
+                    int(self.width / 10),
+                    cmd_func=self.set_sort_type,
+                    args=(sort_id,),
+                )
+                sort_button.draw()
+                return_list.append(sort_button.return_text)
+            line_feed.draw()
+            line_feed.draw()
+            
+            # 排序顺序
+            info_draw = draw.NormalDraw()
+            info_draw.text = _("○排序顺序：\n")
+            info_draw.draw()
+            
+            current_sort_order = cache.rhodes_island.makefood_sort_order
+            for order_id, order_name in sort_order_options:
+                if order_id == current_sort_order:
+                    button_text = f"[●{order_name}]"
+                else:
+                    button_text = f"[{order_name}]"
+                order_button = draw.CenterButton(
+                    button_text,
+                    f"order_{order_id}",
+                    int(self.width / 10),
+                    cmd_func=self.set_sort_order,
+                    args=(order_id,),
+                )
+                order_button.draw()
+                return_list.append(order_button.return_text)
+            line_feed.draw()
+            line_feed.draw()
+            
+            # 返回按钮
+            back_button = draw.CenterButton(_("[返回]"), _("返回"), self.width)
+            back_button.draw()
+            return_list.append(back_button.return_text)
+            line_feed.draw()
+            
+            yrn = flow_handle.askfor_all(return_list)
+            if yrn == back_button.return_text:
+                break
+
+    def set_sort_type(self, sort_type: int):
+        """设置排序维度"""
+        # 设置排序时重置筛选
+        cache.rhodes_island.makefood_filter_type = []
+        cache.rhodes_island.makefood_filter_difficulty = -1
+        cache.rhodes_island.makefood_filter_time = -1
+        
+        cache.rhodes_island.makefood_sort_type = sort_type
+
+    def set_sort_order(self, sort_order: int):
+        """设置排序顺序"""
+        # 设置排序时重置筛选
+        cache.rhodes_island.makefood_filter_type = []
+        cache.rhodes_island.makefood_filter_difficulty = -1
+        cache.rhodes_island.makefood_filter_time = -1
+        
+        cache.rhodes_island.makefood_sort_order = sort_order
 
 
 class SeeFoodListByFoodNameDraw:

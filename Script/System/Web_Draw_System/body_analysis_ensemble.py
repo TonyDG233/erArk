@@ -397,14 +397,17 @@ def process_character(char_name, full_body_path, json_path, models, needs_sigmoi
     return True
 
 
-def collect_characters(base_dirs):
+def collect_characters(base_dirs, skip_existing=True):
     """
     收集所有待处理的角色信息
 
-    输入：base_dirs: list[str] - 角色目录列表
+    输入：
+        base_dirs: list[str] - 角色目录列表
+        skip_existing: bool - 是否跳过已生成JSON的角色（默认True）
     输出：list[tuple(str, str, str)] - [(角色名, 全身图路径, JSON输出路径), ...]
     """
     characters = []
+    skipped_count = 0
     for base_dir in base_dirs:
         if not os.path.exists(base_dir):
             print(f"目录不存在，跳过: {base_dir}")
@@ -416,7 +419,13 @@ def collect_characters(base_dirs):
             full_body_path = os.path.join(char_dir, f"{d}_全身.png")
             json_path = os.path.join(char_dir, f"{d}_body.json")
             if os.path.exists(full_body_path):
+                # 跳过已生成JSON的角色
+                if skip_existing and os.path.exists(json_path):
+                    skipped_count += 1
+                    continue
                 characters.append((d, full_body_path, json_path))
+    if skipped_count > 0:
+        print(f"跳过已识别角色: {skipped_count}个")
     return characters
 
 
@@ -432,9 +441,9 @@ def main():
     """
     start_time = time.time()
 
-    # 构建路径
+    # 构建路径 - 从 Script/System/Web_Draw_System 往上走3级到项目根目录
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    workspace_root = os.path.dirname(current_dir)
+    workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(current_dir)))
     base_dirs = [
         os.path.join(workspace_root, 'image', '立绘', '干员'),
         os.path.join(workspace_root, 'image', '立绘', '特殊NPC'),

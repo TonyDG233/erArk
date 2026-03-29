@@ -397,15 +397,12 @@ function createInteractionTypePanel(types) {
         return m.selected === true || mId === targetId || String(m.id) === String(currentMajorType);
     });
     
-    // 计算大类卡片的垂直居中偏移
-    // 容器最小高度 47.8125rem，卡片总高度 = count * 5.3125 - 0.9375
+    // 计算大类卡片的垂直位置（2026-03-17: 改为上对齐，不再居中）
+    // 使用固定的顶部偏移量，卡片从顶部开始向下排列
     const CARD_HEIGHT = 4.375; // rem
     const CARD_GAP = 0.9375; // rem
     const CARD_TOTAL_HEIGHT = CARD_HEIGHT + CARD_GAP; // 5.3125 rem
-    const CONTAINER_HEIGHT = 47.8125; // rem
-    const majorCount = majorTypes.length;
-    const totalCardsHeight = majorCount * CARD_TOTAL_HEIGHT - CARD_GAP; // 最后一个不需要间距
-    const centerOffset = (CONTAINER_HEIGHT - totalCardsHeight) / 2;
+    const TOP_OFFSET = 0.5; // rem - 顶部边距
     
     majorTypes.forEach((majorType, index) => {
         // 1. 创建大类卡片
@@ -414,9 +411,9 @@ function createInteractionTypePanel(types) {
         majorCard.dataset.id = majorType.id; // Store ID for lookup
         majorCard.dataset.index = index; // Store index for positioning
         
-        // 设置固定位置（绝对定位），应用居中偏移
+        // 设置固定位置（绝对定位），从顶部开始排列
         // 卡片高度 4.375rem + 间距 0.9375rem = 5.3125rem
-        const topPosition = centerOffset + index * CARD_TOTAL_HEIGHT;
+        const topPosition = TOP_OFFSET + index * CARD_TOTAL_HEIGHT;
         majorCard.style.top = `${topPosition}rem`;
         
         // 兼容类型比较

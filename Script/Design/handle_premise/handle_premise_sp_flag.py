@@ -2103,6 +2103,17 @@ def handle_hidden_sex_mode_0(character_id: int) -> int:
     return character_data.sp_flag.hidden_sex_mode == 0
 
 
+@add_premise(constant_promise.Premise.PLAYER_IN_HIDDEN_SEX_MODE)
+def handle_player_in_hidden_sex_mode(character_id: int) -> int:
+    """
+    玩家在隐奸模式中
+    Keyword arguments:
+    character_id -- 角色id
+    Return arguments:
+    int -- 权重
+    """
+    return handle_hidden_sex_mode_ge_1(0)
+
 @add_premise(constant_promise.Premise.PLAYER_NOT_IN_HIDDEN_SEX_MODE)
 def handle_player_not_in_hidden_sex_mode(character_id: int) -> int:
     """

@@ -107,6 +107,9 @@ input_response = None
 # 用于存储事件选项响应
 event_option_response = None
 
+# 用于存储结算选项按钮响应
+settlement_button_response = None
+
 # 全局服务器线程对象
 server_thread = None
 server_running = False
@@ -1911,6 +1914,39 @@ def handle_event_option_selected(data):
         })
 
 
+@socketio.on('settlement_button_selected')
+def handle_settlement_button_selected(data):
+    """
+    处理结算选项按钮选择
+    
+    参数：
+    data (dict): 包含 return_text 参数
+    
+    返回值类型：无
+    功能描述：接收前端选择的结算选项按钮，保存到全局变量中
+    """
+    global settlement_button_response
+    
+    try:
+        return_text = data.get('return_text')
+        
+        logging.info(f"收到结算选项按钮选择: return_text={return_text}")
+        
+        with state_lock:
+            settlement_button_response = return_text
+        
+        socketio.emit('settlement_button_confirmed', {
+            'success': True,
+            'return_text': return_text
+        })
+    except Exception as e:
+        logging.error(f"处理结算选项按钮选择时出错: {str(e)}")
+        socketio.emit('settlement_button_confirmed', {
+            'success': False,
+            'error': str(e)
+        })
+
+
 @socketio.on('get_settlement_state')
 def handle_get_settlement_state(data):
     """
@@ -2598,6 +2634,65 @@ def clear_event_option_response():
     
     with state_lock:
         event_option_response = None
+
+
+def emit_settlement_buttons(buttons, description_text: str = ""):
+    """
+    发送结算选项按钮到前端
+    
+    参数：
+    buttons (list或None): 按钮列表，每个按钮包含 {text, return_text, tooltip}
+                          如果为 None，则表示关闭结算选项弹窗
+    description_text (str): 描述文本，显示在按钮上方
+    
+    返回值类型：无
+    功能描述：通过WebSocket通知前端显示结算选项弹窗，包含描述文本和按钮
+    """
+    try:
+        if buttons is None:
+            socketio.emit('settlement_buttons', {'visible': False, 'buttons': [], 'description_text': ''})
+        else:
+            socketio.emit('settlement_buttons', {
+                'visible': True, 
+                'buttons': buttons,
+                'description_text': description_text
+            })
+        logging.debug(f"发送结算选项按钮: buttons={len(buttons) if buttons else 0}, description_len={len(description_text)}")
+    except Exception as e:
+        logging.error(f"发送结算选项按钮失败: {str(e)}")
+
+
+def get_settlement_button_response():
+    """
+    获取结算选项按钮响应
+    
+    参数：无
+    
+    返回值类型：str或None
+    功能描述：返回用户选择的结算选项按钮的return_text，获取后清空
+    """
+    global settlement_button_response
+    
+    with state_lock:
+        response = settlement_button_response
+        settlement_button_response = None
+    
+    return response
+
+
+def clear_settlement_button_response():
+    """
+    清空结算选项按钮响应
+    
+    参数：无
+    
+    返回值类型：无
+    功能描述：清空之前的结算选项按钮响应
+    """
+    global settlement_button_response
+    
+    with state_lock:
+        settlement_button_response = None
 
 
 def start_server():

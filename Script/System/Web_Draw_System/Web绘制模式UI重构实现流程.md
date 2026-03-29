@@ -10,7 +10,7 @@
 - `[x]` 已完成
 - `[!]` 遇到问题需调整
 
-**最后更新**：2026年3月10日
+**最后更新**：2026年3月23日
 
 ---
 
@@ -1188,7 +1188,7 @@
        - `.interaction-type-list` 改为 `position: relative`，移除 flex 布局，添加固定最小高度
        - `.major-card` 添加 `position: absolute; left: 0;`，top 由 JS 设置
        - `.interaction-minor-list` 改为 `position: absolute; left: 0.9375rem;`（保持左侧缩进），top 由 JS 设置
-  - **效果**：大类卡片在容器中垂直居中排列，位置固定，隐藏其他卡片时激活卡片不会移动位置
+  - **效果**：大类卡片在容器中从顶部开始排列（2026-03-17更新，原为垂直居中），位置固定，隐藏其他卡片时激活卡片不会移动位置
 - [x] 修复点击选中大类后小类列表位置错误的问题（2026-03-04更新）
   - **问题描述**：在 `selectMajorType()` 函数中创建小类列表时，没有设置 `style.top`，导致小类列表默认定位到 `top: 0`（上对齐）
   - **解决方案**：在 `selectMajorType()` 函数中创建小类列表后，从激活卡片的 `style.top` 读取位置，计算并设置小类列表的 `style.top`
@@ -1233,6 +1233,27 @@
     3. 修改 `updateMinorTypeButtons()` 函数：在末尾检查 `pendingMinorTypeSelection`，如果存在则自动选中对应的小类并触发 `selectMinorType()`
   - **修改文件**：`static/js/new_ui_interaction.js`
   - **效果**：从悬浮预览模式点击小类时，一次点击即可正确选中
+
+#### 3.6.11 交互类型面板布局调整（2026-03-17）
+- [x] 将交互类型面板从垂直居中改为垂直上对齐
+  - **修改原因**：优化视觉布局，使交互面板从顶部开始排列，更符合使用习惯
+  - **CSS 修改**（`static/css/style.css`）：
+    1. `.new-ui-interaction-panel`：`top: 50%` + `transform: translateY(-50%)` → `top: 0.5rem`
+    2. `.new-ui-interaction-panel`：`justify-content: center` → `justify-content: flex-start`
+  - **JS 修改**（`static/js/new_ui_interaction.js`）：
+    1. 移除 `centerOffset` 居中偏移计算
+    2. 新增 `TOP_OFFSET = 0.5` 作为固定顶部边距（rem）
+    3. 卡片位置计算：`topPosition = TOP_OFFSET + index * CARD_TOTAL_HEIGHT`
+  - **效果**：交互类型卡片从面板顶部开始向下排列，预留0.5rem顶部边距
+
+- [x] 降低主画面区和容器的最小高度限制
+  - **修改原因**：原min-height过高，适当降低以适配更多屏幕尺寸
+  - **CSS 修改**（`static/css/style.css`）：
+    1. `.new-ui-container`：`min-height: 820px` → `min-height: 800px`
+    2. `.new-ui-layout`：`min-height: 820px` → `min-height: 800px`
+    3. `.new-ui-main-scene`：`min-height: 34rem` → `min-height: 32rem`
+    4. `.interaction-type-list`：`min-height: 47.8125rem`（9大类）→ `min-height: 37rem`（7大类）
+  - **效果**：主画面区高度限制略微降低，适配7个交互大类的实际需求
 
 ### 3.7 对话框区域
 
@@ -2664,6 +2685,130 @@ def draw(self):
 - 事件文本和选项文本均添加到文本回溯缓存，支持回溯查看
 - 子事件选择后的输出文本正确作为对话文本显示
 
+### 6.5 结算选项弹窗系统 ✅
+
+**阶段状态**：已完成
+**完成日期**：2026年3月20日
+
+#### 6.5.1 需求分析
+
+##### 6.5.1.1 问题背景
+- [x] 分析结算模式下按钮交互问题
+  - 结算遮罩 z-index: 10000，普通按钮无法被点击
+  - 特定场景（如射精忍耐选择）需要在结算中显示选项按钮
+- [x] 确定触发时机：`cache.web_text_recording_flag` 为 True 时
+- [x] 参考事件选项弹窗实现模式
+
+##### 6.5.1.2 设计目标
+- [x] 实现结算模式下选项按钮的模态弹窗显示
+- [x] 描述文本显示在弹窗上方，按钮列表显示在下方
+- [x] z-index: 15000，与事件选项弹窗一致，高于结算遮罩
+- [x] 按钮数量超过4个时支持滚动条
+
+#### 6.5.2 后端实现
+
+##### 6.5.2.1 缓存字段添加
+- [x] **game_type.py**: 在 Cache 类中添加 `web_settlement_description: str` 字段
+  - 用于预设结算选项的描述文本
+  - 默认为空字符串，可由调用方设置
+
+##### 6.5.2.2 WebSocket事件处理
+- [x] **web_server.py**: 添加全局变量 `settlement_button_response`
+- [x] **web_server.py**: 添加 `emit_settlement_buttons(buttons, description_text)` 函数
+  - 发送按钮列表和描述文本到前端
+  - 支持 `buttons=None` 关闭弹窗
+- [x] **web_server.py**: 添加 `get_settlement_button_response()` 函数获取用户选择
+- [x] **web_server.py**: 添加 `clear_settlement_button_response()` 函数清空响应
+- [x] **web_server.py**: 添加 `handle_settlement_button_selected(data)` 处理器
+
+**WebSocket事件**：
+| 事件名 | 方向 | 数据格式 |
+|--------|------|----------|
+| `settlement_buttons` | 服务端→客户端 | `{visible: bool, buttons: [...], description_text: str}` |
+| `settlement_button_selected` | 客户端→服务端 | `{return_text: str}` |
+| `settlement_button_confirmed` | 服务端→客户端 | `{success: bool}` |
+
+##### 6.5.2.3 流程控制修改
+- [x] **flow_handle_web.py**: 导入结算按钮相关函数
+- [x] **flow_handle_web.py**: 添加 `_handle_settlement_buttons(return_list, saved_other_texts)` 函数
+  - 从 `cache.current_draw_elements` 提取 `type == "button"` 元素
+  - **描述文本获取**（2026-03-21更新）：从传入的 `saved_other_texts` 参数获取最后一段有效文本作为描述（或使用 `cache.web_settlement_description`）
+  - 调用 `emit_settlement_buttons()` 发送到前端
+  - 轮询 `get_settlement_button_response()` 等待用户选择
+  - 执行对应命令并返回结果
+  - **状态清理**（2026-03-21新增）：选择完成后清空按钮元素和描述文本缓存
+- [x] **flow_handle_web.py**: 修改 `askfor_all()` 函数
+  - **在 `update_game_state()` 之前保存 `web_other_texts`**（2026-03-21更新）：因为 `update_game_state()` 会清空 `web_other_texts`
+  - 将保存的 `saved_other_texts` 传递给 `_handle_settlement_buttons()`
+  - 若 `web_text_recording_flag` 为 True，调用 `_handle_settlement_buttons()` 处理结算中的按钮
+
+#### 6.5.3 前端实现
+
+##### 6.5.3.1 结算选项弹窗
+- [x] **game.js**: 添加 `settlement_buttons` Socket监听器
+- [x] **game.js**: 添加 `settlement_button_confirmed` Socket监听器
+- [x] **game.js**: 实现 `showSettlementButtonsModal(buttons, descriptionText)` 函数
+  - 创建弹窗结构：遮罩 + 内容区 + 描述 + 标题 + 按钮列表
+  - 按钮数量 > 4 时添加 `.scrollable` 类启用滚动
+- [x] **game.js**: 实现 `hideSettlementButtonsModal()` 函数
+- [x] **game.js**: 实现 `selectSettlementButton(returnText)` 函数
+
+**弹窗结构**：
+```html
+<div class="settlement-buttons-modal">
+  <div class="settlement-buttons-content">
+    <div class="settlement-buttons-description">描述文本</div>
+    <div class="settlement-buttons-title">请选择</div>
+    <div class="settlement-buttons-container">
+      <button class="settlement-button">按钮1</button>
+      <button class="settlement-button">按钮2</button>
+      ...
+    </div>
+  </div>
+</div>
+```
+
+##### 6.5.3.2 样式定义
+- [x] **style.css**: 添加 `.settlement-buttons-modal` 模态弹窗样式
+  - z-index: 15000，高于结算遮罩
+  - 半透明黑色背景
+- [x] **style.css**: 添加 `.settlement-buttons-content` 内容容器样式
+- [x] **style.css**: 添加 `.settlement-buttons-description` 描述文本样式
+- [x] **style.css**: 添加 `.settlement-buttons-title` 标题样式
+- [x] **style.css**: 添加 `.settlement-buttons-container` 按钮容器样式
+  - `.scrollable` 变体：max-height: 280px，启用滚动条
+- [x] **style.css**: 添加 `.settlement-button` 按钮样式
+  - 包含 hover 和 active 状态
+
+#### 6.5.4 数据流程
+
+1. [x] `askfor_all()` 被调用，检测到 `web_text_recording_flag == True`
+2. [x] **保存描述文本**（2026-03-21更新）：在调用 `update_game_state()` 之前，先复制 `web_other_texts` 到 `saved_other_texts`（因为 `update_game_state()` 会清空 `web_other_texts`）
+3. [x] 调用 `update_game_state()` 更新前端状态
+4. [x] 调用 `_handle_settlement_buttons(return_list, saved_other_texts)`
+5. [x] 从 `cache.current_draw_elements` 提取按钮，从 `saved_other_texts` 提取描述文本
+6. [x] 调用 `emit_settlement_buttons()` 发送数据到前端
+7. [x] 前端 `showSettlementButtonsModal()` 显示弹窗
+8. [x] 用户点击按钮，前端发送 `settlement_button_selected` 事件
+9. [x] 后端接收 `return_text`，设置 `settlement_button_response`
+10. [x] `_handle_settlement_buttons()` 获取响应，执行对应命令
+11. [x] 调用 `emit_settlement_buttons(None)` 关闭弹窗
+12. [x] **状态清理**（2026-03-21新增）：
+    - 清空 `cache.web_settlement_description`
+    - 从 `cache.current_draw_elements` 移除按钮元素
+    - 清空 `cache.web_other_texts`
+13. [x] 返回用户选择的结果
+
+#### 6.5.5 修改文件清单
+
+| 文件路径 | 修改内容 | 状态 |
+|---------|---------|------|
+| `Script/Core/game_type.py` | 添加 `web_settlement_description` 字段 | ✅ |
+| `Script/Core/web_server.py` | 添加结算按钮WebSocket事件处理 | ✅ |
+| `Script/Core/flow_handle_web.py` | 添加 `_handle_settlement_buttons()` 函数，修改 `askfor_all()` | ✅ |
+| `static/game.js` | 添加结算按钮弹窗渲染和交互 | ✅ |
+| `static/css/style.css` | 添加结算按钮弹窗样式 | ✅ |
+
 ---
 
 ## 阶段七：素材处理工具 ✅
@@ -3765,6 +3910,37 @@ web_server 检测 web_sub_panel_mode → 附加 sub_panel_data
 
 ### 10.4 头部子菜单系统重构 (2026-02-12)
 
+### 10.5 底部布局精简优化 (2026-03-17)
+
+#### 10.5.1 需求说明
+- [x] 移除“滚动到底部”按钮及其功能
+- [x] 移除“跳过输入等待”按钮（保留右键跳过功能）
+- [x] 移除底部“erArk WebUI - 本地运行版本”文本
+- [x] 将缩放控件移动到输入框同一行，右对齐显示
+
+#### 10.5.2 HTML结构修改
+- [x] 删除 `#scroll-to-bottom-btn` 按钮元素
+- [x] 删除 `#skip-wait-btn` 按钮元素
+- [x] 删除 `<p>erArk WebUI - 本地运行版本</p>` 文本
+- [x] 将 `#scale-control-container` 移入 `#persistent-input-container` 内部
+- [x] 新增 `.input-group` 包裹输入框和提交按钮
+
+#### 10.5.3 CSS样式修改
+- [x] 删除 `.scroll-button` 样式定义
+- [x] 修改 `#persistent-input-container` 为 `space-between` 布局
+- [x] 新增 `.input-group` 样式（`flex: 1`, `max-width: 650px`）
+- [x] 修改 `.scale-control-container` 移除 `border-top`，添加 `margin-left: auto` 右对齐
+
+#### 10.5.4 JavaScript修改
+- [x] 删除 `ScrollManager.init()` 中对 `scroll-to-bottom-btn` 的事件监听
+- [x] 删除 `ScrollManager.init()` 中对 `skip-wait-btn` 的事件监听
+- [x] 保留 `WaitManager.requestSkipUntilMain()` 方法（右键跳过功能依赖）
+
+#### 10.5.5 布局效果
+- 底部只显示单行：左侧输入框+提交按钮，右侧缩放控件
+- 界面更加简洁，减少冠余元素
+- 缩放功能保持不变，仅位置调整
+
 #### 10.4.1 需求说明
 - [x] 头部部位位置改为使用双眼中间偏上一点的位置
 - [x] 头发、兽角、兽耳部位合并到头部子菜单（类似臀部子菜单模式）
@@ -4184,6 +4360,44 @@ children.forEach(child => {
 | `Script/Design/talk.py` | 修改口上文本处理调用实时推送 | ✅ |
 | `Script/Design/settle_behavior.py` | 修改结算文本处理调用实时推送 | ✅ |
 | `static/game.js` | 添加 `realtime_text` 事件监听器 | ✅ |
+
+### 10.12 修复子面板模式下地图对不齐问题 (2026-03-23)
+
+#### 10.12.1 问题描述
+- 在将移动面板等其他面板作为子面板绘制后，地图AA字符画再次出现列错位的问题
+- 之前在 10.6 节已修复的地图对齐功能在子面板模式下失效
+
+#### 10.12.2 问题原因
+- 子面板模式下，DOM 结构发生变化：
+  ```
+  gameContent
+    ├─ sub-panel-header
+    └─ sub-panel-content  ← 子面板内容在此容器内
+         └─ inline-container
+              ├─ map-line (地图行)
+              └─ ...
+  ```
+- 之前的修复方案在 `renderGameState()` 中调用 `normalizeMapBlocks(gameContent)`
+- 但 `normalizeMapBlocks()` 函数只检查传入根元素的直接子元素（`root.children`）
+- 在子面板模式下，`.map-line` 元素不是 `gameContent` 的直接子元素，而是嵌套在 `.sub-panel-content` 容器中
+- 因此函数找不到 `.map-line` 元素，无法执行宽度规范化
+
+#### 10.12.3 修复方案
+- [x] **修改调用参数**：将 `normalizeMapBlocks(gameContent)` 改为 `normalizeMapBlocks(contentContainer)`
+- [x] `contentContainer` 变量已在渲染流程前定义：
+  - 子面板模式：`gameContent.querySelector('.sub-panel-content')`
+  - 普通模式：`gameContent`
+- [x] 这样无论是否处于子面板模式，都会传入正确的内容容器
+
+#### 10.12.4 修改文件清单
+| 文件路径 | 修改内容 | 状态 |
+|---------|---------|------|
+| `static/game.js` | 修改 `normalizeMapBlocks()` 调用，使用 `contentContainer` 替代 `gameContent` | ✅ |
+
+#### 10.12.5 技术总结
+- 子面板模式引入了额外的 DOM 层级（`.sub-panel-header` 和 `.sub-panel-content`）
+- 需要确保所有依赖 DOM 结构的处理函数考虑子面板模式下的容器变化
+- `contentContainer` 是渲染过程中的标准内容容器引用，应优先使用
 
 ---
 

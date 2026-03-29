@@ -691,6 +691,24 @@ function initWebSocket() {
             hideEventOptionsModal();
         }
     });
+    
+    // 接收结算选项按钮事件
+    socket.on('settlement_buttons', (data) => {
+        console.log('收到结算选项按钮:', data);
+        if (data.visible && data.buttons && data.buttons.length > 0) {
+            showSettlementButtonsModal(data.buttons, data.description_text || '');
+        } else {
+            hideSettlementButtonsModal();
+        }
+    });
+    
+    // 接收结算选项按钮确认事件
+    socket.on('settlement_button_confirmed', (data) => {
+        console.log('收到结算选项按钮确认:', data);
+        if (data.success) {
+            hideSettlementButtonsModal();
+        }
+    });
 }
 
 /**
@@ -948,6 +966,131 @@ function selectEventOption(optionId, eventId) {
         });
     } else {
         console.error('[事件选项] WebSocket未连接，无法发送选择');
+        // 重新启用按钮
+        buttons.forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('disabled');
+        });
+    }
+}
+
+/**
+ * 显示结算选项按钮弹窗
+ * 在结算模式下显示按钮选项，用于射精忍耐等选择
+ * @param {Array} buttons - 按钮数组，每个按钮包含 {text, return_text, tooltip}
+ * @param {string} descriptionText - 描述文本，显示在按钮上方
+ */
+function showSettlementButtonsModal(buttons, descriptionText = '') {
+    // 先移除可能存在的旧弹窗
+    hideSettlementButtonsModal();
+    
+    // 创建弹窗容器
+    const modal = document.createElement('div');
+    modal.id = 'settlement-buttons-modal';
+    modal.className = 'settlement-buttons-modal';
+    
+    // 创建弹窗内容
+    const content = document.createElement('div');
+    content.className = 'settlement-buttons-content';
+    
+    // 如果有描述文本，在上方显示
+    if (descriptionText && descriptionText.trim()) {
+        const descContainer = document.createElement('div');
+        descContainer.className = 'settlement-buttons-description';
+        
+        // 处理描述文本中的换行符
+        const textLines = descriptionText.split(/\\n|\n/);
+        textLines.forEach((line, index) => {
+            if (line.trim()) {
+                const lineElement = document.createElement('div');
+                lineElement.className = 'settlement-buttons-description-line';
+                lineElement.textContent = line;
+                descContainer.appendChild(lineElement);
+            }
+        });
+        
+        content.appendChild(descContainer);
+    }
+    
+    // 创建标题（选项提示）
+    const title = document.createElement('div');
+    title.className = 'settlement-buttons-title';
+    title.textContent = '请选择';
+    content.appendChild(title);
+    
+    // 创建按钮容器
+    const buttonsContainer = document.createElement('div');
+    buttonsContainer.className = 'settlement-buttons-container';
+    
+    // 如果按钮数量超过4个，启用滚动
+    if (buttons.length > 4) {
+        buttonsContainer.classList.add('scrollable');
+    }
+    
+    // 创建每个按钮
+    buttons.forEach((buttonData, index) => {
+        const button = document.createElement('button');
+        button.className = 'settlement-button';
+        button.textContent = buttonData.text;
+        button.dataset.returnText = buttonData.return_text;
+        
+        // 添加悬停提示
+        if (buttonData.tooltip) {
+            button.title = buttonData.tooltip;
+        }
+        
+        // 添加点击事件
+        button.addEventListener('click', () => {
+            selectSettlementButton(buttonData.return_text);
+        });
+        
+        buttonsContainer.appendChild(button);
+    });
+    
+    content.appendChild(buttonsContainer);
+    modal.appendChild(content);
+    document.body.appendChild(modal);
+    
+    console.log('[结算选项] 显示结算选项弹窗，按钮数量:', buttons.length, '，描述文本长度:', descriptionText.length);
+}
+
+/**
+ * 隐藏结算选项按钮弹窗
+ */
+function hideSettlementButtonsModal() {
+    const modal = document.getElementById('settlement-buttons-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        setTimeout(() => {
+            if (modal.parentNode) {
+                modal.parentNode.removeChild(modal);
+            }
+        }, 200);
+        console.log('[结算选项] 隐藏结算选项弹窗');
+    }
+}
+
+/**
+ * 选择结算选项按钮
+ * @param {string} returnText - 按钮的返回文本
+ */
+function selectSettlementButton(returnText) {
+    console.log('[结算选项] 选择按钮:', returnText);
+    
+    // 禁用所有按钮，防止重复点击
+    const buttons = document.querySelectorAll('.settlement-button');
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        btn.classList.add('disabled');
+    });
+    
+    // 发送选择到后端
+    if (window.socket && window.socket.connected) {
+        window.socket.emit('settlement_button_selected', {
+            return_text: returnText
+        });
+    } else {
+        console.error('[结算选项] WebSocket未连接，无法发送选择');
         // 重新启用按钮
         buttons.forEach(btn => {
             btn.disabled = false;
@@ -1522,7 +1665,8 @@ function renderGameState(state) {
     }
 
     // 规范化地图渲染宽度
-    normalizeMapBlocks(gameContent);
+    // 使用 contentContainer 而非 gameContent，确保子面板模式下也能正确找到 .map-line 元素
+    normalizeMapBlocks(contentContainer);
     
     // 更新对话框状态（如果状态数据中包含对话框信息）
     // 注意：不在此处添加对话框到历史缓存，因为 socket 事件已经处理

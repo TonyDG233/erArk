@@ -622,6 +622,8 @@ class BehaviorEffect:
     """ H_阴茎位置 改变当前阴茎位置为交互对象_阴茎蹭角中 """
     PENIS_IN_T_EARS = 816
     """ H_阴茎位置 改变当前阴茎位置为交互对象_阴茎蹭耳朵中 """
+    PENIS_IN_T_DEEP_THROAT = 817
+    """ H_阴茎位置 改变当前阴茎位置为交互对象_深喉中 """
     PENIS_IN_T_HAT = 821
     """ H_阴茎位置 改变当前阴茎位置为交互对象_帽子交中 """
     PENIS_IN_T_GLASSES = 822

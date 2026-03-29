@@ -487,6 +487,70 @@ def get_cook_from_makefood_data_by_food_type(food_type: str) -> Dict[uuid.UUID, 
             food_list[food_id] = cache.recipe_data[int(food_id)].name
     return food_list
 
+
+def get_filtered_sorted_cook_data(food_type: str) -> list:
+    """
+    按食物种类从做饭区获取经过筛选和排序的食物列表
+    Keyword arguments:
+    food_type -- 食物类型
+    Return arguments:
+    list -- 食物列表 [(食物id, 食物名字), ...]
+    """
+    # 获取基础食物列表
+    base_food_dict = get_cook_from_makefood_data_by_food_type(food_type)
+    food_list = list(base_food_dict.items())
+    
+    # 获取筛选/排序配置
+    filter_type = cache.rhodes_island.makefood_filter_type
+    filter_difficulty = cache.rhodes_island.makefood_filter_difficulty
+    filter_time = cache.rhodes_island.makefood_filter_time
+    sort_type = cache.rhodes_island.makefood_sort_type
+    sort_order = cache.rhodes_island.makefood_sort_order
+    
+    # 应用筛选
+    if filter_type or filter_difficulty != -1 or filter_time != -1:
+        filtered_list = []
+        for food_id, food_name in food_list:
+            recipe = cache.recipe_data[int(food_id)]
+            
+            # 类型筛选
+            if filter_type and recipe.type not in filter_type:
+                continue
+            
+            # 难度筛选（档位：0简单0-3，1中等4-6，2困难7+）
+            if filter_difficulty != -1:
+                if filter_difficulty == 0 and recipe.difficulty > 3:
+                    continue
+                elif filter_difficulty == 1 and (recipe.difficulty < 4 or recipe.difficulty > 6):
+                    continue
+                elif filter_difficulty == 2 and recipe.difficulty < 7:
+                    continue
+            
+            # 时间筛选（档位：0快速0-30，1中等31-60，2耗时61+）
+            if filter_time != -1:
+                if filter_time == 0 and recipe.time > 30:
+                    continue
+                elif filter_time == 1 and (recipe.time < 31 or recipe.time > 60):
+                    continue
+                elif filter_time == 2 and recipe.time < 61:
+                    continue
+            
+            filtered_list.append((food_id, food_name))
+        food_list = filtered_list
+    
+    # 应用排序
+    if sort_type != 0 and food_list:
+        reverse = (sort_order == 1)
+        if sort_type == 1:  # 按难度排序
+            food_list.sort(key=lambda x: cache.recipe_data[int(x[0])].difficulty, reverse=reverse)
+        elif sort_type == 2:  # 按时间排序
+            food_list.sort(key=lambda x: cache.recipe_data[int(x[0])].time, reverse=reverse)
+        elif sort_type == 3:  # 按类型排序
+            food_list.sort(key=lambda x: cache.recipe_data[int(x[0])].type, reverse=reverse)
+    
+    return food_list
+
+
 def judge_accept_special_seasoning_food(character_id: int):
     """
     是否接受特殊调味的食物

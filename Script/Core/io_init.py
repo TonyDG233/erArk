@@ -2,7 +2,6 @@
 import threading
 import queue
 import json
-from Script.Core import main_frame
 from Script.Config import game_config, normal_config
 from Script.Core import cache_control
 
@@ -14,6 +13,49 @@ _web_module_loaded = False
 """ 是否已加载Web IO模块 """
 web_io = None
 """ Web版IO模块的引用（延迟导入） """
+
+# Tkinter main_frame 延迟导入状态（解决无显示环境下的导入问题）
+_main_frame_module = None
+""" main_frame模块的引用（延迟导入） """
+_main_frame_load_attempted = False
+""" 是否已尝试加载main_frame模块 """
+
+
+def _get_main_frame():
+    """
+    延迟获取main_frame模块
+    
+    参数：无
+    返回值类型：module 或 None
+    功能描述：只在非Web模式且需要时才导入main_frame，避免在无显示环境下报错
+    """
+    global _main_frame_module, _main_frame_load_attempted
+    
+    if _main_frame_module is not None:
+        return _main_frame_module
+    
+    if _main_frame_load_attempted:
+        return None
+    
+    _main_frame_load_attempted = True
+    
+    # 检查是否配置为Web模式（直接读取配置，不依赖cache）
+    web_draw = getattr(normal_config.config_normal, 'web_draw', 0)
+    if web_draw:
+        # Web模式下不需要加载main_frame
+        return None
+    
+    try:
+        from Script.Core import main_frame
+        _main_frame_module = main_frame
+        return _main_frame_module
+    except Exception as e:
+        print(f"警告：无法导入Tkinter main_frame模块: {e}")
+        print("将尝试使用Web模式...")
+        # 强制启用Web模式
+        normal_config.config_normal.web_draw = True
+        cache.web_mode = True
+        return None
 
 
 def _is_web_mode():
@@ -65,9 +107,11 @@ def _ensure_main_frame_bound():
     """
     global _main_frame_bound
     if not _main_frame_bound and not _is_web_mode():
-        main_frame.bind_return(_input_evnet_set)
-        main_frame.bind_queue(_send_queue)
-        _main_frame_bound = True
+        main_frame = _get_main_frame()
+        if main_frame is not None:
+            main_frame.bind_return(_input_evnet_set)
+            main_frame.bind_queue(_send_queue)
+            _main_frame_bound = True
 
 
 def _input_evnet_set(order):
@@ -138,6 +182,10 @@ def run(open_func: object):
     else:
         # 原始逻辑
         _ensure_main_frame_bound()
+        main_frame = _get_main_frame()
+        if main_frame is None:
+            print("错误：无法加载Tkinter，且Web模式未启用")
+            return
         global _flowthread
         _flowthread = threading.Thread(target=open_func, name="flowthread")
         _flowthread.start()
